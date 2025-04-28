@@ -1,0 +1,44 @@
+title: Enhanced User Flow
+---
+flowchart RL
+    %% Define styles
+    classDef mainNode fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef decisionNode fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef endNode fill:#f66,stroke:#333,stroke-width:2px,color:#fff,stroke-dasharray: 5 5;
+    classDef processNode fill:#ccf,stroke:#333,stroke-width:2px;
+    
+    %% Main process flow
+    subgraph UserFlow
+        direction RL
+        A(["User Action"]):::mainNode -- "Shares Info" --> B["Browser"]:::mainNode
+        B -- "Seeks Jobs?" --> C{Find jobs?}:::decisionNode
+        C -- "No" --> A
+        C -- "Yes" --> D["Share Job to App"]:::processNode
+        D --> E["Application Process"]:::processNode
+        E -- "Interact with" --> F["Backend"]:::mainNode
+    end
+
+    %% Backend process flow
+    subgraph BackendProcess
+        direction RL
+        F --> G{Is in list of job sites?}:::decisionNode
+        G -- "No" --> H["STOP"]:::endNode
+        G -- "Yes" --> I["Parse Site"]:::processNode
+        I -- "Success" --> J["Return to User"]:::mainNode
+        I -- "Failure (Retry)" --> H
+    end
+    
+    %% Loop back to the user
+    J --> A
+
+    %% Styling nodes
+    A:::mainNode
+    B:::mainNode
+    C:::decisionNode
+    D:::processNode
+    E:::processNode
+    F:::mainNode
+    G:::decisionNode
+    H:::endNode
+    I:::processNode
+    J:::mainNode
