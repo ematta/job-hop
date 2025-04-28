@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, ScrollView, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, Button, ScrollView, Text, StyleSheet, TouchableOpacity, Image, Modal, Alert } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 export default function JobsScreen() {
   const [search, setSearch] = useState('');
+  const [urlModalVisible, setUrlModalVisible] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
   const jobs = [
     { company: 'Google', title: 'Software Engineer' },
     { company: 'Microsoft', title: 'Product Manager' },
@@ -29,7 +31,7 @@ export default function JobsScreen() {
             value={search}
             onChangeText={setSearch}
           />
-          <Button title="Add Job" onPress={() => {}} />
+          <Button title="Add Job" onPress={() => setUrlModalVisible(true)} />
           <Button title="Upload Resume" onPress={() => {}} />
         </View>
         <ScrollView contentContainerStyle={styles.list}>
@@ -40,6 +42,24 @@ export default function JobsScreen() {
             </TouchableOpacity>
           ))}
         </ScrollView>
+        {/* URL Input Modal */}
+        <Modal visible={urlModalVisible} transparent animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <ThemedText>Enter Job Posting URL</ThemedText>
+              <TextInput
+                style={styles.urlInput}
+                placeholder="https://..."
+                value={urlInput}
+                onChangeText={setUrlInput}
+              />
+              <View style={styles.modalButtons}>
+                <Button title="Cancel" onPress={() => { setUrlModalVisible(false); setUrlInput(''); }} />
+                <Button title="Submit" onPress={() => { Alert.alert('Job posting URL received! Processing...'); setUrlModalVisible(false); setUrlInput(''); }} />
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -59,5 +79,28 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+  },
+  urlInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    height: 40,
+    marginVertical: 8,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
