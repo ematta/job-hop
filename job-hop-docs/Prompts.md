@@ -39,3 +39,22 @@ Important Notes:
 
 * Focus only on confirming receipt of the URL. Do not attempt to parse or analyze the job posting content at this stage.
 * The alert message should be concise and user-friendly."
+
+### Backend Implementation:
+You are designing the logic for a backend service that ingests job posting URLs from LinkedIn or Indeed. Your goal is to extract the job description content from these URLs. You will use Playwright for DOM scraping and MCP (presumably a library or tool) to understand the Document Object Model (DOM).
+
+Task:
+
+Describe, step-by-step, the backend process for handling incoming job posting URLs.  Assume the service receives requests via an HTTP POST endpoint /job with a JSON payload containing only the URL.
+
+The process should include these steps:
+
+Receive Request: The service receives an HTTP POST request to the /job endpoint. This request contains a JSON payload with a single field named url, which holds the job posting URL.
+URL Validation & Site Identification: Determine if the provided URL belongs to LinkedIn or Indeed. (You don't need to validate that it is a valid job posting, just identify the site.)
+DOM Scraping (Playwright): Using Playwright, scrape the content of the webpage associated with the URL. Focus on extracting the core job description text. Consider how you would handle potential variations in page structure across different LinkedIn and Indeed postings.
+Temporary Storage: For now, store the extracted job description in memory. (A persistent datastore will be implemented later.)
+Example URLs (for context):
+
+https://www.indeed.com/viewjob?jk=5f2540f59f833c22&from=shareddesktop_copy
+https://www.linkedin.com/jobs/view/4213646193
+Output: Provide a detailed, numbered list outlining the steps of the backend process, including considerations for error handling (e.g., what happens if Playwright fails to load the page or scrape data).  Assume you have access to standard backend libraries and tools for HTTP request handling, JSON parsing, and basic error management.
