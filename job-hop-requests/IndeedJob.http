@@ -1,0 +1,8 @@
+POST http://localhost:8000/job
+Content-Type: application/json
+<@ ./indeed-job.json
+
+GET https://localhost:8000/job/{job_id}
+Content-Type: application/json
+{ "job_id": "1234567890" }
+
