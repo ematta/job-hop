@@ -53,3 +53,14 @@ Once the server is running, you can access:
 ## Endpoints
 
 - `GET /health` - Health check endpoint that returns status 200
+
+## Troubleshooting 403 Errors
+
+- If you encounter `Fetching failed: 403`, it means the target site is blocking scraping requests.
+- Ensure the `User-Agent` header is set to mimic a real browser (default is a Chrome UA).
+- Check the console logs for detailed status, headers, and response body snippet logged by the backend.
+- To bypass blocks, consider:
+  - Rotating or customizing the `User-Agent` header in environment configuration.
+  - Using retry with exponential backoff (configured via `MAX_RETRIES` and `BACKOFF_FACTOR`).
+  - Enabling proxy support by setting `HTTP_PROXY`/`HTTPS_PROXY` environment variables.
+- Update the plan file `PLAN_OF_ATTACK.md` for further diagnostics steps if needed.
