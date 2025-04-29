@@ -1,8 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardActions, Typography, Box, IconButton, Tooltip } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Close';
-import DescriptionIcon from '@mui/icons-material/Description';
+import { Card, CardContent, Typography } from '@mui/material';
 
 export interface Job {
   id: string;
@@ -22,51 +19,18 @@ export interface Resume {
 
 interface JobCardProps {
   job: Job;
-  resumes: Resume[];
-  onEdit: (job: Job) => void;
-  onDelete: (job: Job) => void;
-  onAttachResume: (jobId: string, resumeId: string) => void;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, resumes, onEdit, onDelete, onAttachResume }) => (
-  <Card>
-    <CardContent>
-      <Typography variant="h6">{job.company_name}</Typography>
-      <Typography variant="subtitle1">{job.title}</Typography>
-      {job.url && (
-        <Typography variant="body2" color="text.secondary">
-          <a href={job.url} target="_blank" rel="noopener noreferrer">{job.url}</a>
-        </Typography>
-      )}
-      <Box mt={2}>
-        <Typography variant="body2" gutterBottom>Attach Resume:</Typography>
-        <Box display="flex" gap={1}>
-          {resumes.map(resume => (
-            <Tooltip key={resume.id} title={resume.name} placement="top">
-              <IconButton
-                color={job.resume_id === resume.id ? 'primary' : 'default'}
-                onClick={() => onAttachResume(job.id, resume.id)}
-                aria-label={`Select resume ${resume.name}`}
-              >
-                <DescriptionIcon color={job.resume_id === resume.id ? 'primary' : 'disabled'} />
-              </IconButton>
-            </Tooltip>
-          ))}
-        </Box>
-      </Box>
+const JobCard: React.FC<JobCardProps> = ({ job }) => (
+  <Card sx={{ borderRadius: 3, minWidth: 180, maxWidth: 240, p: 1 }}>
+    <CardContent sx={{ p: 1 }}>
+      <Typography variant="body2" sx={{ fontSize: 10, fontWeight: 600, mb: 0.5 }}>
+        {job.company_name}
+      </Typography>
+      <Typography variant="body2" sx={{ fontSize: 8, color: 'text.secondary' }}>
+        {job.title}
+      </Typography>
     </CardContent>
-    <CardActions>
-      <Tooltip title="Edit">
-        <IconButton onClick={() => onEdit(job)}>
-          <EditIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Delete">
-        <IconButton color="error" onClick={() => onDelete(job)}>
-          <DeleteIcon />
-        </IconButton>
-      </Tooltip>
-    </CardActions>
   </Card>
 );
 
