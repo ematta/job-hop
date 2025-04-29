@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
-import { Box, Button, Typography, Paper, Alert, CircularProgress, List, ListItem, ListItemText, Link } from '@mui/material';
+import { Box, Typography, Paper, Alert } from '@mui/material';
+import ResumeUpload from '../components/ResumeUpload';
+import ResumeList from '../components/ResumeList';
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -104,57 +106,8 @@ export default function ResumesPage() {
         <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center">Your Resumes</Typography>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
-        <Box mb={4} display="flex" flexDirection="column" alignItems="center">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="application/pdf"
-            style={{ display: 'none' }}
-            onChange={handleUpload}
-            disabled={uploading}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            sx={{ mb: 1 }}
-          >
-            {uploading ? 'Uploading...' : 'Upload PDF Resume'}
-          </Button>
-        </Box>
-        {loading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight={60}>
-            <CircularProgress size={28} />
-          </Box>
-        ) : resumes.length === 0 ? (
-          <Typography color="text.secondary" align="center">You haven&apos;t uploaded any resumes yet.</Typography>
-        ) : (
-          <List>
-            {resumes.map((name) => (
-              // grab document from supabase storage
-              <ListItem key={name} secondaryAction={
-                <Link
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  underline="hover"
-                  color="primary"
-                  variant="body2"
-                  onClick={async (e) => {
-                    e.preventDefault();
-                    const link = await getFileFromStorage(`${userId}/${name}`);
-                    link.click();
-                    URL.revokeObjectURL(link.href); // Clean up the object URL
-                  }}
-                >
-                  Download
-                </Link>
-              }>
-                <ListItemText primary={name} primaryTypographyProps={{ noWrap: true }} />
-              </ListItem>
-            ))}
-          </List>
-        )}
+        <ResumeUpload uploading={uploading} onUpload={handleUpload} fileInputRef={fileInputRef} />
+        <ResumeList resumes={resumes} userId={userId} loading={loading} getFileFromStorage={getFileFromStorage} />
       </Paper>
     </Box>
   );

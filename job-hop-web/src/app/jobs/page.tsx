@@ -1,11 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, IconButton, Card, CardContent, CardActions, Modal, TextField, Button, Grid, Tooltip, CircularProgress, Alert, Snackbar, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { Box, Typography, Button, Grid, CircularProgress, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Close';
-import DescriptionIcon from '@mui/icons-material/Description';
 import supabase from '../supabaseClient';
+import JobModal from '../components/JobModal';
+import DeleteJobDialog from '../components/DeleteJobDialog';
+import JobCard from '../components/JobCard';
 
 interface Job {
   id: string;
@@ -90,6 +90,10 @@ const JobsPage = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedJob(null);
+  };
+
+  const handleFormChange = (field: string, value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
   };
 
   // Add or edit job
@@ -188,7 +192,7 @@ const JobsPage = () => {
       </Box>
       <Button
         variant="contained"
-        color="secondary"
+        color="primary"
         startIcon={<AddIcon />}
         onClick={handleOpenAdd}
         aria-label="Add Job"
@@ -203,93 +207,32 @@ const JobsPage = () => {
         <Grid container spacing={2}>
           {jobs.map((job) => (
             <Grid key={job.id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">{job.company_name}</Typography>
-                  <Typography variant="subtitle1">{job.title}</Typography>
-                  {job.url && (
-                    <Typography variant="body2" color="text.secondary">
-                      <a href={job.url} target="_blank" rel="noopener noreferrer">{job.url}</a>
-                    </Typography>
-                  )}
-                  <Box mt={2}>
-                    <Typography variant="body2" gutterBottom>Attach Resume:</Typography>
-                    <Box display="flex" gap={1}>
-                      {resumes.map(resume => (
-                        <Tooltip key={resume.id} title={resume.name} placement="top">
-                          <IconButton
-                            color={job.resume_id === resume.id ? 'primary' : 'default'}
-                            onClick={() => handleAttachResume(job.id, resume.id)}
-                            aria-label={`Select resume ${resume.name}`}
-                          >
-                            <DescriptionIcon color={job.resume_id === resume.id ? 'primary' : 'disabled'} />
-                          </IconButton>
-                        </Tooltip>
-                      ))}
-                    </Box>
-                  </Box>
-                </CardContent>
-                <CardActions>
-                  <Tooltip title="Edit">
-                    <IconButton onClick={() => handleOpenEdit(job)}>
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton color="error" onClick={() => handleDeleteClick(job)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-                </CardActions>
-              </Card>
+              <JobCard
+                job={job}
+                resumes={resumes}
+                onEdit={handleOpenEdit}
+                onDelete={handleDeleteClick}
+                onAttachResume={handleAttachResume}
+              />
             </Grid>
           ))}
         </Grid>
       )}
-      <Modal open={openModal} onClose={handleCloseModal}>
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 2 }}>
-          <Typography variant="h6" mb={2}>{modalMode === 'add' ? 'Add Job' : 'Edit Job'}</Typography>
-          <TextField
-            label="Company Name"
-            fullWidth
-            margin="normal"
-            value={form.company_name}
-            onChange={e => setForm({ ...form, company_name: e.target.value })}
-          />
-          <TextField
-            label="Job Title"
-            fullWidth
-            margin="normal"
-            value={form.title}
-            onChange={e => setForm({ ...form, title: e.target.value })}
-          />
-          <TextField
-            label="URL"
-            fullWidth
-            margin="normal"
-            value={form.url}
-            onChange={e => setForm({ ...form, url: e.target.value })}
-          />
-          <Box mt={2} display="flex" justifyContent="flex-end">
-            <Button onClick={handleCloseModal} sx={{ mr: 1 }}>Cancel</Button>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              {modalMode === 'add' ? 'Add' : 'Save'}
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Job</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete the job {jobToDelete?.title} at {jobToDelete?.company_name}? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained">Delete</Button>
-        </DialogActions>
-      </Dialog>
+      <JobModal
+        open={openModal}
+        mode={modalMode}
+        form={form}
+        onChange={handleFormChange}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmit}
+      />
+      <DeleteJobDialog
+        open={deleteDialogOpen}
+        jobTitle={jobToDelete?.title}
+        companyName={jobToDelete?.company_name}
+        onCancel={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+      />
     </Box>
   );
 };
