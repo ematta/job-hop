@@ -19,10 +19,17 @@ export interface Resume {
 
 interface JobCardProps {
   job: Job;
+  onEdit: (job: Job) => void;
+  onDelete: (job: Job) => void;
+  onAttachResume: (jobId: string, resumeId: string) => Promise<void>;
+  resumes: { id: string; name: string }[];
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job }) => (
-  <Card sx={{ borderRadius: 3, minWidth: 180, maxWidth: 240, p: 1 }}>
+const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
+  <Card
+    sx={{ borderRadius: 3, minWidth: 180, maxWidth: 240, p: 1, cursor: onEdit ? 'pointer' : 'default' }}
+    onClick={onEdit ? () => onEdit(job) : undefined}
+  >
     <CardContent sx={{ p: 1 }}>
       <Typography variant="body2" sx={{ fontSize: 10, fontWeight: 600, mb: 0.5 }}>
         {job.company_name}

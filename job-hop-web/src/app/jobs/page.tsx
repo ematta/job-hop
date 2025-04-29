@@ -190,15 +190,6 @@ const JobsPage = () => {
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
         <Typography variant="h4">Jobs List</Typography>
       </Box>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<AddIcon />}
-        onClick={handleOpenAdd}
-        aria-label="Add Job"
-      >
-        Add Job
-      </Button>
       {(loadingJobs || loadingResumes) ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
           <CircularProgress />
@@ -209,8 +200,8 @@ const JobsPage = () => {
             <Grid key={job.id}>
               <JobCard
                 job={job}
-                resumes={resumes}
                 onEdit={handleOpenEdit}
+                resumes={resumes}
                 onDelete={handleDeleteClick}
                 onAttachResume={handleAttachResume}
               />
@@ -233,6 +224,31 @@ const JobsPage = () => {
         onCancel={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
       />
+      {/* Floating Add Button */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleOpenAdd}
+        aria-label="Add Job"
+        sx={{
+          position: 'fixed',
+          bottom: 32,
+          right: 32,
+          zIndex: 1000,
+          borderRadius: '50%',
+          width: 64,
+          height: 64,
+          minWidth: 0,
+          minHeight: 0,
+          boxShadow: 3,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 0
+        }}
+      >
+        <AddIcon sx={{ fontSize: 36 }} />
+      </Button>
     </Box>
   );
 };
