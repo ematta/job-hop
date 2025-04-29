@@ -3,9 +3,6 @@ import { Box, Typography, Paper, Link } from '@mui/material';
 import Image from 'next/image';
 
 export default function Home() {
-  // Placeholder for authentication state
-  const isLoggedIn = false; // Change to true to simulate logged-in state
-
   return (
     <>
       <main>

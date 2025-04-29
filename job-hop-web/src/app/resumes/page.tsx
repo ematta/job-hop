@@ -20,6 +20,23 @@ function getUserId() {
   }
 }
 
+function getFileFromStorage(filePath: string) {
+  return supabase.storage.from('resumes').download(filePath)
+    .then(({ data, error }) => {
+      if (error) {
+        throw new Error('Failed to download file: ' + error.message);
+      }
+      // Create a blob URL for the file
+      const blobUrl = URL.createObjectURL(data);
+      // Create a link element to download the file
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filePath.split('/').pop() || 'resume.pdf'; // Use the file name from the path
+      return link;
+    }
+  );
+}
+
 export default function ResumesPage() {
   const [resumes, setResumes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -115,16 +132,22 @@ export default function ResumesPage() {
         ) : (
           <List>
             {resumes.map((name) => (
+              // grab document from supabase storage
               <ListItem key={name} secondaryAction={
                 <Link
-                  href={supabase.storage.from('resumes').getPublicUrl(`${userId}/${name}`).data.publicUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   underline="hover"
                   color="primary"
                   variant="body2"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    const link = await getFileFromStorage(`${userId}/${name}`);
+                    link.click();
+                    URL.revokeObjectURL(link.href); // Clean up the object URL
+                  }}
                 >
-                  View
+                  Download
                 </Link>
               }>
                 <ListItemText primary={name} primaryTypographyProps={{ noWrap: true }} />
