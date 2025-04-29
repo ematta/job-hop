@@ -1,0 +1,3 @@
+POST /resume
+Content-Type: application/pdf
+< ./resume.pdf

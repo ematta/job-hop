@@ -3,5 +3,18 @@ name = "job-hop-backend"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = []
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlmodel",
+    "typer[all]",
+    "python-dotenv",
+    "supabase",
+    "playwright",
+    "psycopg2-binary>=2.9.10",
+    "boto3",
+]
+
+[project.scripts]
+jobhop-migrate = "python -m src.scripts.migrate"
