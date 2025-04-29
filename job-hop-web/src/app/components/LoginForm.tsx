@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
 import { Box, TextField, Button, Typography, Alert, CircularProgress, Paper } from '@mui/material';
+import supabase from '../supabaseClient';
 
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export default function LoginForm() {
   const router = useRouter();
