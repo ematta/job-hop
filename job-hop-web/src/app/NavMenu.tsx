@@ -74,39 +74,41 @@ export default function NavMenu() {
           </Avatar>
         </IconButton>
       </Tooltip>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        {isLoggedIn ? (
-          <>
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>
-              Logout
+      {anchorEl && (
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          {isLoggedIn ? (
+            <>
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>
+                Logout
+              </MenuItem>
+              <MenuItem onClick={() => handleNav('/resumes')}>
+                <ListItemIcon><DescriptionIcon fontSize="small" /></ListItemIcon>
+                Resumes
+              </MenuItem>
+              <MenuItem onClick={() => handleNav('/jobs')}>
+                <ListItemIcon><WorkIcon fontSize="small" /></ListItemIcon>
+                Jobs
+              </MenuItem>
+              <MenuItem onClick={() => handleNav('/profile')}>
+                <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
+                Profile
+              </MenuItem>
+            </>
+          ) : (
+            <MenuItem onClick={handleLogin}>
+              <ListItemIcon><LoginIcon fontSize="small" /></ListItemIcon>
+              Login
             </MenuItem>
-            <MenuItem onClick={() => handleNav('/resumes')}>
-              <ListItemIcon><DescriptionIcon fontSize="small" /></ListItemIcon>
-              Resumes
-            </MenuItem>
-            <MenuItem onClick={() => handleNav('/jobs')}>
-              <ListItemIcon><WorkIcon fontSize="small" /></ListItemIcon>
-              Jobs
-            </MenuItem>
-            <MenuItem onClick={() => handleNav('/profile')}>
-              <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
-              Profile
-            </MenuItem>
-          </>
-        ) : (
-          <MenuItem onClick={handleLogin}>
-            <ListItemIcon><LoginIcon fontSize="small" /></ListItemIcon>
-            Login
-          </MenuItem>
-        )}
-      </Menu>
+          )}
+        </Menu>
+      )}
     </>
   );
 }
