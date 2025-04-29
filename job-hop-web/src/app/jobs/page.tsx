@@ -108,7 +108,6 @@ const JobsPage = () => {
             title: form.title,
             url: form.url,
             user_id: userId,
-            resume_id: form.resume_id || null,
           },
         ]);
         if (error) throw error;
@@ -186,10 +185,16 @@ const JobsPage = () => {
       </Snackbar>
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
         <Typography variant="h4">Jobs List</Typography>
-        <IconButton color="primary" onClick={handleOpenAdd} aria-label="Add Job">
-          <AddIcon />
-        </IconButton>
       </Box>
+      <Button
+        variant="contained"
+        color="secondary"
+        startIcon={<AddIcon />}
+        onClick={handleOpenAdd}
+        aria-label="Add Job"
+      >
+        Add Job
+      </Button>
       {(loadingJobs || loadingResumes) ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
           <CircularProgress />
