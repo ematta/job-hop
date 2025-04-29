@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
+import { Box, Button, Typography, Paper, Alert, CircularProgress, List, ListItem, ListItemText, Link } from '@mui/material';
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -71,61 +72,67 @@ export default function ResumesPage() {
 
   if (!userId) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
-          <h2 className="text-2xl font-bold mb-4">Resumes</h2>
-          <p className="text-gray-500">You must be logged in to view your resumes.</p>
-        </div>
-      </div>
+      <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="#f9fafb">
+        <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400, textAlign: 'center' }}>
+          <Typography variant="h4" fontWeight="bold" mb={2}>Resumes</Typography>
+          <Typography color="text.secondary">You must be logged in to view your resumes.</Typography>
+        </Paper>
+      </Box>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Your Resumes</h2>
-        {error && <div className="text-red-500 text-center mb-2">{error}</div>}
-        {success && <div className="text-green-600 text-center mb-2">{success}</div>}
-        <div className="mb-6 flex flex-col items-center">
+    <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="#f9fafb">
+      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
+        <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center">Your Resumes</Typography>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+        <Box mb={4} display="flex" flexDirection="column" alignItems="center">
           <input
             ref={fileInputRef}
             type="file"
             accept="application/pdf"
-            className="hidden"
+            style={{ display: 'none' }}
             onChange={handleUpload}
             disabled={uploading}
           />
-          <button
-            type="button"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mb-2"
+          <Button
+            variant="contained"
+            color="primary"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
+            sx={{ mb: 1 }}
           >
             {uploading ? 'Uploading...' : 'Upload PDF Resume'}
-          </button>
-        </div>
+          </Button>
+        </Box>
         {loading ? (
-          <div className="text-center text-gray-500">Loading...</div>
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight={60}>
+            <CircularProgress size={28} />
+          </Box>
         ) : resumes.length === 0 ? (
-          <div className="text-center text-gray-500">You haven&apos;t uploaded any resumes yet.</div>
+          <Typography color="text.secondary" align="center">You haven&apos;t uploaded any resumes yet.</Typography>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <List>
             {resumes.map((name) => (
-              <li key={name} className="py-2 flex items-center justify-between">
-                <span className="truncate">{name}</span>
-                <a
+              <ListItem key={name} secondaryAction={
+                <Link
                   href={supabase.storage.from('resumes').getPublicUrl(`${userId}/${name}`).data.publicUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline text-sm"
+                  underline="hover"
+                  color="primary"
+                  variant="body2"
                 >
                   View
-                </a>
-              </li>
+                </Link>
+              }>
+                <ListItemText primary={name} primaryTypographyProps={{ noWrap: true }} />
+              </ListItem>
             ))}
-          </ul>
+          </List>
         )}
-      </div>
-    </div>
+      </Paper>
+    </Box>
   );
 }

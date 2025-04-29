@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
+import { Button } from '@mui/material';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -80,12 +81,14 @@ export function LogoutButton() {
     router.replace('/login');
   };
   return (
-    <button
+    <Button
       onClick={handleLogout}
-      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+      color="error"
+      variant="contained"
       disabled={loading}
+      sx={{ px: 4, py: 1.5, fontWeight: 'bold' }}
     >
       {loading ? 'Logging out...' : 'Logout'}
-    </button>
+    </Button>
   );
 }

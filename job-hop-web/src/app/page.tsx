@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { Box, Typography, Paper, Link } from '@mui/material';
 
 export default function Home() {
   // Placeholder for authentication state
@@ -8,21 +9,30 @@ export default function Home() {
   return (
     <>
       {/* Fixed, always-visible top-right circle button */}
-      <a
+      <Link
         href={isLoggedIn ? "/profile" : "/login"}
-        className="fixed top-6 right-6 z-50"
         aria-label={isLoggedIn ? "Profile" : "Login"}
-        style={{ WebkitTapHighlightColor: 'transparent' }}
+        underline="none"
+        sx={{ position: 'fixed', top: 24, right: 24, zIndex: 50, WebkitTapHighlightColor: 'transparent' }}
       >
-        <div
-          className={`w-10 h-10 max-w-[40px] max-h-[40px] rounded-full flex items-center justify-center shadow-md transition-colors duration-200 ${
-            isLoggedIn ? "bg-purple-500" : "bg-gray-300 hover:bg-gray-400"
-          }`}
-          style={{ minWidth: 32, minHeight: 32 }}
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: 3,
+            bgcolor: isLoggedIn ? 'purple.500' : 'grey.300',
+            '&:hover': { bgcolor: isLoggedIn ? 'purple.700' : 'grey.400' },
+            minWidth: 32,
+            minHeight: 32,
+            transition: 'background-color 0.2s',
+          }}
         >
-          {/* Placeholder for profile image */}
           {isLoggedIn ? (
-            <span className="text-white font-bold text-base">P</span>
+            <Typography color="white" fontWeight="bold" fontSize={16}>P</Typography>
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -30,8 +40,7 @@ export default function Home() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-5 h-5 text-gray-700"
-              style={{ display: 'block' }}
+              style={{ width: 20, height: 20, color: '#555', display: 'block' }}
             >
               <path
                 strokeLinecap="round"
@@ -40,72 +49,43 @@ export default function Home() {
               />
             </svg>
           )}
-        </div>
-      </a>
-      <style jsx global>{`
-        @media not all and (min-resolution:.001dpcm) { @supports (-webkit-appearance:none) {
-          a[aria-label="Profile"], a[aria-label="Login"] > div {
-            width: 36px !important;
-            height: 36px !important;
-            max-width: 36px !important;
-            max-height: 36px !important;
-          }
-        }}
-        @media screen and (-webkit-min-device-pixel-ratio:0) {
-          a[aria-label="Profile"], a[aria-label="Login"] > div {
-            width: 36px !important;
-            height: 36px !important;
-            max-width: 36px !important;
-            max-height: 36px !important;
-          }
-        }
-      `}</style>
-      <main className="flex min-h-screen items-center justify-center bg-gray-900">
-        <div className="bg-gray-800 p-8 rounded shadow-md w-full max-w-md space-y-6">
-          <h2 className="text-2xl font-bold text-center text-gray-100">Welcome to Job Hop</h2>
-          <p className="text-center text-gray-300">Your job search starts here!</p>
-          <Image
-            src="/job_hop_logo.png"
-            alt="Job Hop Logo"
-            width={150}
-            height={150}
-            className="mx-auto"
-          />
-        </div>
+        </Box>
+      </Link>
+      <main>
+        <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="#111827">
+          <Paper elevation={3} sx={{ bgcolor: '#1f2937', p: 8, borderRadius: 2, width: '100%', maxWidth: 400, mx: 'auto', my: 6 }}>
+            <Typography variant="h4" fontWeight="bold" textAlign="center" color="#f3f4f6" mb={2}>
+              Welcome to Job Hop
+            </Typography>
+            <Typography color="#d1d5db" textAlign="center" mb={3}>
+              Your job search starts here!
+            </Typography>
+            <Box display="flex" justifyContent="center" mb={3}>
+              <img src="/job_hop_logo.png" alt="Job Hop Logo" width={150} height={150} style={{ display: 'block', margin: '0 auto' }} />
+            </Box>
+          </Paper>
+        </Box>
       </main>
-      <footer className="bg-gray-950 text-gray-300 py-4 text-center border-t border-gray-800">
-        <p className="text-sm">
-          &copy; {new Date().getFullYear()} Job Hop. All rights reserved.
-        </p>
-        <p className="text-sm">
-          <a href="/privacy-policy" className="text-blue-400 hover:underline">
-            Privacy Policy
-          </a>{" "}
-          |{" "}
-          <a href="/terms-of-service" className="text-blue-400 hover:underline">
-            Terms of Service
-          </a>
-        </p>
-        <p className="text-sm">
-          <a href="/contact" className="text-blue-400 hover:underline">
-            Contact Us
-          </a>
-        </p>
-        <p className="text-sm">
-          <a href="/about" className="text-blue-400 hover:underline">
-            About Us
-          </a>
-        </p>
-        <p className="text-sm">
-          <a href="/help" className="text-blue-400 hover:underline">
-            Help Center
-          </a>
-        </p>
-        <p className="text-sm">
-          <a href="/feedback" className="text-blue-400 hover:underline">
-            Feedback
-          </a>
-        </p>
+      <footer>
+        <Box bgcolor="#09090b" color="#d1d5db" py={2} textAlign="center" borderTop={1} borderColor="#27272a">
+          <Typography variant="body2">&copy; {new Date().getFullYear()} Job Hop. All rights reserved.</Typography>
+          <Typography variant="body2">
+            <Link href="/privacy-policy" color="primary" underline="hover">Privacy Policy</Link> |{' '}
+            <Link href="/terms-of-service" color="primary" underline="hover">Terms of Service</Link>
+          </Typography>
+          <Typography variant="body2">
+            <Link href="/contact" color="primary" underline="hover">Contact Us</Link>
+          </Typography>
+          <Typography variant="body2">
+            <Link href="/about" color="primary" underline="hover">About Us</Link>
+          </Typography>
+          <Typography variant="body2">
+            <Link href="/help" color="primary" underline="hover">Help Center</Link>
+          </Typography>
+          <Typography variant="body2">
+            <Link href="/feedback" color="primary" underline="hover">Feedback</Link>
+          </Typography>
+        </Box>
       </footer>
     </>
   );
