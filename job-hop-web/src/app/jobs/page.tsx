@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid, CircularProgress, Alert, Snackbar } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Snackbar } from '@mui/material';
+import { DndContext, closestCenter, useDraggable, useDroppable } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import supabase from '../supabaseClient';
 import JobModal from '../components/JobModal';
 import DeleteJobDialog from '../components/DeleteJobDialog';
@@ -15,7 +17,7 @@ interface Job {
   url?: string;
   resume_id?: string;
   cover_letter?: string;
-  status: string
+  status: string;
 }
 
 function getUserId() {
@@ -28,6 +30,53 @@ function getUserId() {
   } catch {
     return null;
   }
+}
+
+const KANBAN_COLUMNS = [
+  { key: 'Open', label: 'Open' },
+  { key: 'Applied', label: 'Applied' },
+  { key: 'Interviewing', label: 'Interviewing' },
+  { key: 'Closed', label: 'Closed' },
+];
+
+// Draggable wrapper for JobCard
+function DraggableJobCard({ job, children }: { job: Job; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: job.id });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        opacity: isDragging ? 0.5 : 1,
+        marginBottom: 12,
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Droppable Kanban column
+function DroppableColumn({ id, children }: { id: string; children: React.ReactNode }) {
+  const { setNodeRef, isOver } = useDroppable({ id });
+  return (
+    <Box
+      ref={setNodeRef}
+      sx={{
+        flex: 1,
+        minWidth: 220,
+        bgcolor: isOver ? '#27272a' : '#18181b',
+        borderRadius: 2,
+        p: 2,
+        minHeight: 500,
+        transition: 'background 0.2s',
+      }}
+    >
+      {children}
+    </Box>
+  );
 }
 
 const JobsPage = () => {
@@ -67,6 +116,23 @@ const JobsPage = () => {
       setLoadingResumes(false);
     });
   }, [userId, openModal]);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel('public:job')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'job', filter: `user_id=eq.${userId}` }, payload => {
+        if (payload.eventType === 'UPDATE') {
+          setJobs(prev => prev.map(j => j.id === payload.new.id ? { ...j, ...payload.new } : j));
+        } else if (payload.eventType === 'INSERT') {
+          setJobs(prev => [...prev, payload.new]);
+        } else if (payload.eventType === 'DELETE') {
+          setJobs(prev => prev.filter(j => j.id !== payload.old.id));
+        }
+      })
+      .subscribe();
+    return () => { channel.unsubscribe(); };
+  }, [userId]);
 
   const handleOpenAdd = () => {
     setModalMode('add');
@@ -179,6 +245,31 @@ const JobsPage = () => {
     }
   };
 
+  // Drag and drop handlers
+  const handleDragEnd = async (event: any) => {
+    const { active, over } = event;
+    if (!over) return;
+    const jobId = active.id;
+    const targetCol = over.id;
+    const job = jobs.find(j => j.id === jobId);
+    if (!job || job.status === targetCol) return;
+    // Update status in Supabase
+    await supabase.from('job').update({ status: targetCol }).eq('id', jobId);
+    setJobs(jobs.map(j => j.id === jobId ? { ...j, status: targetCol } : j));
+  };
+
+  // Group jobs by status
+  const jobsByStatus: Record<string, Job[]> = {
+    Open: [],
+    Applied: [],
+    Interviewing: [],
+    Closed: [],
+  };
+  jobs.forEach(job => {
+    const col = job.status || 'Open';
+    if (jobsByStatus[col]) jobsByStatus[col].push(job);
+  });
+
   return (
     <Box sx={{ p: 4 }}>
       <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')}>
@@ -195,19 +286,28 @@ const JobsPage = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <Grid container spacing={2}>
-          {jobs.map((job) => (
-            <Grid key={job.id}>
-              <JobCard
-                job={job}
-                onEdit={handleOpenEdit}
-                resumes={resumes}
-                onDelete={handleDeleteClick}
-                onAttachResume={handleAttachResume}
-              />
-            </Grid>
-          ))}
-        </Grid>
+        <Box display="flex" gap={2} alignItems="flex-start" justifyContent="center" minHeight={400}>
+          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            {KANBAN_COLUMNS.map(col => (
+              <DroppableColumn key={col.key} id={col.key}>
+                <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6' }}>{col.label}</Typography>
+                <SortableContext items={jobsByStatus[col.key].map(j => j.id)} strategy={verticalListSortingStrategy}>
+                  {jobsByStatus[col.key].map(job => (
+                    <DraggableJobCard key={job.id} job={job}>
+                      <JobCard
+                        job={job}
+                        onEdit={handleOpenEdit}
+                        resumes={resumes}
+                        onDelete={handleDeleteClick}
+                        onAttachResume={handleAttachResume}
+                      />
+                    </DraggableJobCard>
+                  ))}
+                </SortableContext>
+              </DroppableColumn>
+            ))}
+          </DndContext>
+        </Box>
       )}
       <JobModal
         open={openModal}
@@ -224,7 +324,6 @@ const JobsPage = () => {
         onCancel={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
       />
-      {/* Floating Add Button */}
       <FloatingAddButton onClick={handleOpenAdd} aria-label="Add Job" />
     </Box>
   );
