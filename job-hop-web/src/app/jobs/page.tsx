@@ -1,11 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, Grid, CircularProgress, Alert, Snackbar } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { Box, Typography, Grid, CircularProgress, Alert, Snackbar } from '@mui/material';
 import supabase from '../supabaseClient';
 import JobModal from '../components/JobModal';
 import DeleteJobDialog from '../components/DeleteJobDialog';
 import JobCard from '../components/JobCard';
+import FloatingAddButton from '../components/FloatingAddButton';
 
 interface Job {
   id: string;
@@ -225,30 +225,7 @@ const JobsPage = () => {
         onConfirm={handleDeleteConfirm}
       />
       {/* Floating Add Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpenAdd}
-        aria-label="Add Job"
-        sx={{
-          position: 'fixed',
-          bottom: 32,
-          right: 32,
-          zIndex: 1000,
-          borderRadius: '50%',
-          width: 64,
-          height: 64,
-          minWidth: 0,
-          minHeight: 0,
-          boxShadow: 3,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          p: 0
-        }}
-      >
-        <AddIcon sx={{ fontSize: 36 }} />
-      </Button>
+      <FloatingAddButton onClick={handleOpenAdd} aria-label="Add Job" />
     </Box>
   );
 };
