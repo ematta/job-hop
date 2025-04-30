@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { useAuth } from './AuthProvider';
 import { Box, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
 
-const JobForm: React.FC = () => {
+interface JobFormProps {
+  prefillUrl?: string;
+}
+
+const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
   const { refreshSession } = useAuth();
   const [company, setCompany] = useState('');
   const [title, setTitle] = useState('');
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(prefillUrl || '');
   const [msg, setMsg] = useState<string | null>(null);
   const [msgColor, setMsgColor] = useState<'red' | 'green'>('green');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (prefillUrl) setUrl(prefillUrl);
+  }, [prefillUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +103,9 @@ const JobForm: React.FC = () => {
           '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
           '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
         }}
-      />
+      >
+        { prefillUrl || 'test' }
+      </TextField>
       <Button
         type="submit"
         variant="contained"
