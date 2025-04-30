@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import type { Job } from './types';
 
 interface JobCardProps {
@@ -17,7 +18,10 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
       minWidth: 180,
       maxWidth: 240,
       p: 1,
+      m: '10px', // 10px margin for spacing inside column
       cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
       transition: 'transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s',
       boxShadow: 1,
       bgcolor: '#1f2937',
@@ -35,7 +39,10 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
     }}
     onClick={onEdit ? () => onEdit(job) : undefined}
   >
-    <CardContent sx={{ p: 1 }}>
+    <span style={{ cursor: 'grab', marginRight: 8, display: 'flex', alignItems: 'center' }} className="drag-handle">
+      <DragIndicatorIcon fontSize="small" />
+    </span>
+    <CardContent sx={{ p: 1, flex: 1 }}>
       <Typography
         className="jobcard-company"
         variant="body2"

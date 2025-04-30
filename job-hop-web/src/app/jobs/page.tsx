@@ -59,7 +59,7 @@ function DraggableJobCard({ job, children }: { job: Job; children: React.ReactNo
 }
 
 // Droppable Kanban column
-function DroppableColumn({ id, children }: { id: string; children: React.ReactNode }) {
+function DroppableColumn({ id, children, isEmpty }: { id: string; children: React.ReactNode; isEmpty: boolean }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <Box
@@ -67,13 +67,25 @@ function DroppableColumn({ id, children }: { id: string; children: React.ReactNo
       sx={{
         flex: 1,
         minWidth: 220,
-        bgcolor: isOver ? '#27272a' : '#18181b',
+        bgcolor: isOver ? '#334155' : '#18181b', // highlight drop area
+        border: isOver ? '2px solid #38bdf8' : '2px solid transparent',
         borderRadius: 2,
         p: 2,
         minHeight: 500,
-        transition: 'background 0.2s',
+        transition: 'background 0.2s, border 0.2s',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        gap: 2,
+        position: 'relative',
       }}
     >
+      {isEmpty && (
+        <Typography sx={{ color: '#64748b', width: '100%', textAlign: 'center', mt: 4, fontStyle: 'italic' }}>
+          Empty
+        </Typography>
+      )}
       {children}
     </Box>
   );
@@ -289,18 +301,20 @@ const JobsPage = () => {
         <Box display="flex" gap={2} alignItems="flex-start" justifyContent="center" minHeight={400}>
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             {KANBAN_COLUMNS.map(col => (
-              <DroppableColumn key={col.key} id={col.key}>
-                <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6' }}>{col.label}</Typography>
+              <DroppableColumn key={col.key} id={col.key} isEmpty={jobsByStatus[col.key].length === 0}>
+                <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{col.label}</Typography>
                 <SortableContext items={jobsByStatus[col.key].map(j => j.id)} strategy={verticalListSortingStrategy}>
                   {jobsByStatus[col.key].map(job => (
                     <DraggableJobCard key={job.id} job={job}>
-                      <JobCard
-                        job={job}
-                        onEdit={handleOpenEdit}
-                        resumes={resumes}
-                        onDelete={handleDeleteClick}
-                        onAttachResume={handleAttachResume}
-                      />
+                      <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
+                        <JobCard
+                          job={job}
+                          onEdit={handleOpenEdit}
+                          resumes={resumes}
+                          onDelete={handleDeleteClick}
+                          onAttachResume={handleAttachResume}
+                        />
+                      </Box>
                     </DraggableJobCard>
                   ))}
                 </SortableContext>

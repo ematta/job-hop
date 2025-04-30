@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useAuth } from './AuthProvider';
+import { Box, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
 
 const LoginForm: React.FC = () => {
   const { refreshSession } = useAuth();
@@ -20,27 +21,69 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <h2>Login</h2>
-      <input
-        id="email"
+    <Box
+      component="form"
+      onSubmit={handleLogin}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: 360,
+        bgcolor: '#1f2937',
+        color: '#f3f4f6',
+        p: 4,
+        borderRadius: 2,
+        boxShadow: 3,
+        mx: 'auto',
+        mt: 6,
+      }}
+    >
+      <Typography variant="h6" mb={1} color="#f3f4f6">Login</Typography>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+      )}
+      <TextField
+        label="Email"
         type="email"
-        placeholder="Email"
         value={email}
         onChange={e => setEmail(e.target.value)}
         required
+        fullWidth
+        margin="normal"
+        autoComplete="email"
+        InputLabelProps={{ style: { color: '#d1d5db' } }}
+        InputProps={{ style: { color: '#f3f4f6' } }}
+        sx={{
+          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+        }}
       />
-      <input
-        id="password"
+      <TextField
+        label="Password"
         type="password"
-        placeholder="Password"
         value={password}
         onChange={e => setPassword(e.target.value)}
         required
+        fullWidth
+        margin="normal"
+        autoComplete="current-password"
+        InputLabelProps={{ style: { color: '#d1d5db' } }}
+        InputProps={{ style: { color: '#f3f4f6' } }}
+        sx={{
+          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+        }}
       />
-      <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-    </form>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={loading}
+        sx={{ mt: 2, fontWeight: 'bold' }}
+      >
+        {loading ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : 'Login'}
+      </Button>
+    </Box>
   );
 };
 
