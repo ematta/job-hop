@@ -80,32 +80,39 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
-        width: 360,
-        bgcolor: '#1f2937',
-        color: '#f3f4f6',
-        p: 4,
-        borderRadius: 2,
-        boxShadow: 3,
+        gap: 1.2, // reduced gap
+        width: 340, // slightly narrower
+        bgcolor: '#f8fafc',
+        color: '#1e293b',
+        p: 2, // reduced padding
+        borderRadius: 3,
+        boxShadow: 4,
         mx: 'auto',
-        mt: 6,
+        mt: 2, // reduced margin top
+        minHeight: 340, // reduced min height
       }}
     >
-      <Typography variant="h6" mb={1} color="#f3f4f6">Submit Job</Typography>
+      <Typography variant="h6" mb={0.5} color="#1e293b" fontWeight={700} letterSpacing={1}>
+        Submit Job
+      </Typography>
+      {/* User ID field is visually hidden but present in the DOM for form submission */}
       <TextField
         label="User ID"
         value={form.userId}
         required
         fullWidth
-        margin="normal"
+        margin="dense" // less margin
         InputLabelProps={{ style: { color: '#d1d5db' } }}
         InputProps={{ style: { color: '#f3f4f6' } }}
         sx={{
-          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+          position: 'absolute',
+          left: '-9999px',
+          width: '1px',
+          height: '1px',
+          opacity: 0,
+          pointerEvents: 'none',
         }}
         disabled
-        hidden
       />
       <TextField
         label="Company Name"
@@ -113,12 +120,12 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
         onChange={e => handleChange('company_name', e.target.value)}
         required
         fullWidth
-        margin="normal"
-        InputLabelProps={{ style: { color: '#d1d5db' } }}
-        InputProps={{ style: { color: '#f3f4f6' } }}
+        margin="dense"
+        InputLabelProps={{ style: { color: '#64748b' } }}
+        InputProps={{ style: { color: '#1e293b', background: '#f1f5f9', borderRadius: 2 } }}
         sx={{
-          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+          '& .MuiOutlinedInput-root': { bgcolor: '#f1f5f9', borderRadius: 2 },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' },
         }}
       />
       <TextField
@@ -127,12 +134,12 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
         onChange={e => handleChange('title', e.target.value)}
         required
         fullWidth
-        margin="normal"
-        InputLabelProps={{ style: { color: '#d1d5db' } }}
-        InputProps={{ style: { color: '#f3f4f6' } }}
+        margin="dense"
+        InputLabelProps={{ style: { color: '#64748b' } }}
+        InputProps={{ style: { color: '#1e293b', background: '#f1f5f9', borderRadius: 2 } }}
         sx={{
-          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+          '& .MuiOutlinedInput-root': { bgcolor: '#f1f5f9', borderRadius: 2 },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' },
         }}
       />
       <TextField
@@ -141,12 +148,12 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
         onChange={e => handleChange('url', e.target.value)}
         required
         fullWidth
-        margin="normal"
-        InputLabelProps={{ style: { color: '#d1d5db' } }}
-        InputProps={{ style: { color: '#f3f4f6' } }}
+        margin="dense"
+        InputLabelProps={{ style: { color: '#64748b' } }}
+        InputProps={{ style: { color: '#1e293b', background: '#f1f5f9', borderRadius: 2 } }}
         sx={{
-          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+          '& .MuiOutlinedInput-root': { bgcolor: '#f1f5f9', borderRadius: 2 },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' },
         }}
       />
       <TextField
@@ -155,12 +162,12 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
         onChange={e => handleChange('status', e.target.value)}
         required
         fullWidth
-        margin="normal"
-        InputLabelProps={{ style: { color: '#d1d5db' } }}
-        InputProps={{ style: { color: '#f3f4f6' } }}
+        margin="dense"
+        InputLabelProps={{ style: { color: '#64748b' } }}
+        InputProps={{ style: { color: '#1e293b', background: '#f1f5f9', borderRadius: 2 } }}
         sx={{
-          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+          '& .MuiOutlinedInput-root': { bgcolor: '#f1f5f9', borderRadius: 2 },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' },
         }}
       />
       <Button
@@ -168,12 +175,20 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
         variant="contained"
         color="primary"
         disabled={loading}
-        sx={{ mt: 2, fontWeight: 'bold' }}
+        sx={{
+          mt: 1.2, // less margin top
+          fontWeight: 'bold',
+          borderRadius: 2,
+          boxShadow: 2,
+          textTransform: 'none',
+          fontSize: 16,
+          py: 0.8, // less vertical padding
+        }}
       >
         {loading ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : 'Submit'}
       </Button>
       {msg && (
-        <Alert severity={msgColor === 'red' ? 'error' : 'success'} sx={{ mt: 2 }}>
+        <Alert severity={msgColor === 'red' ? 'error' : 'success'} sx={{ mt: 1.2, borderRadius: 2 }}>
           {msg}
         </Alert>
       )}
@@ -182,7 +197,17 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
         onClick={handleLogout}
         color="error"
         variant="outlined"
-        sx={{ mt: 2, fontWeight: 'bold' }}
+        sx={{
+          mt: 1.2,
+          fontWeight: 'bold',
+          borderRadius: 2,
+          textTransform: 'none',
+          fontSize: 15,
+          py: 0.7, // less vertical padding
+          borderColor: '#ef4444',
+          color: '#ef4444',
+          '&:hover': { borderColor: '#b91c1c', color: '#b91c1c' },
+        }}
         disabled={loading}
       >
         Logout
