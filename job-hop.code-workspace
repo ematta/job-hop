@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "job-hop-backend"
+		},
+		{
+			"path": "job-hop-mobile"
+		},
+		{
+			"path": "job-hop-docs"
+		},
+		{
+			"path": "job-hop-web"
+		},
+		{
+			"path": "job-hop-extension"
+		}
+	]
+}
