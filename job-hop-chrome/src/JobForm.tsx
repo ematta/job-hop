@@ -93,7 +93,7 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
       <TextField
         label="Job URL"
         value={url}
-        onChange={e => setUrl(e.target.value)}
+        onBlur={e => setUrl(e.target.value)}
         required
         fullWidth
         margin="normal"
@@ -103,9 +103,7 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
           '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
           '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
         }}
-      >
-        { prefillUrl || 'test' }
-      </TextField>
+      />
       <Button
         type="submit"
         variant="contained"
