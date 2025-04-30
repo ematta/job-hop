@@ -7,24 +7,41 @@ interface JobFormProps {
   prefillUrl?: string;
 }
 
+interface JobFormState {
+  company_name: string;
+  title: string;
+  url: string;
+  status: string;
+}
+
 const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
   const { refreshSession } = useAuth();
-  const [company, setCompany] = useState('');
-  const [title, setTitle] = useState('');
-  const [url, setUrl] = useState(prefillUrl || '');
+  const [form, setForm] = useState<JobFormState>({
+    company_name: '',
+    title: '',
+    url: prefillUrl || '',
+    status: 'Open', // default status
+  });
   const [msg, setMsg] = useState<string | null>(null);
   const [msgColor, setMsgColor] = useState<'red' | 'green'>('green');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (prefillUrl) setUrl(prefillUrl);
+    if (prefillUrl) setForm(f => ({ ...f, url: prefillUrl }));
   }, [prefillUrl]);
+
+  console.log('JobForm component rendered');
+  console.log('prefillUrl:', prefillUrl);
+
+  const handleChange = (field: keyof JobFormState, value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMsg(null);
-    const { error } = await supabase.from('jobs').insert([{ company, title, url }]);
+    const { error } = await supabase.from('job').insert([{ ...form }]);
     setLoading(false);
     if (error) {
       setMsg('Error!');
@@ -32,9 +49,7 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
     } else {
       setMsg('Success!');
       setMsgColor('green');
-      setCompany('');
-      setTitle('');
-      setUrl('');
+      setForm({ company_name: '', title: '', url: '', status: 'Open' });
     }
   };
 
@@ -64,8 +79,8 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
       <Typography variant="h6" mb={1} color="#f3f4f6">Submit Job</Typography>
       <TextField
         label="Company Name"
-        value={company}
-        onChange={e => setCompany(e.target.value)}
+        value={form.company_name}
+        onChange={e => handleChange('company_name', e.target.value)}
         required
         fullWidth
         margin="normal"
@@ -78,8 +93,8 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
       />
       <TextField
         label="Job Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
+        value={form.title}
+        onChange={e => handleChange('title', e.target.value)}
         required
         fullWidth
         margin="normal"
@@ -92,8 +107,22 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
       />
       <TextField
         label="Job URL"
-        value={url}
-        onBlur={e => setUrl(e.target.value)}
+        value={form.url}
+        onChange={e => handleChange('url', e.target.value)}
+        required
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ style: { color: '#d1d5db' } }}
+        InputProps={{ style: { color: '#f3f4f6' } }}
+        sx={{
+          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+        }}
+      />
+      <TextField
+        label="Status"
+        value={form.status}
+        onChange={e => handleChange('status', e.target.value)}
         required
         fullWidth
         margin="normal"

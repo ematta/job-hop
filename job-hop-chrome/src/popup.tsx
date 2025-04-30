@@ -8,13 +8,20 @@ const PopupContent: React.FC = () => {
   const [currentUrl, setCurrentUrl] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    // Only run in Chrome extension context
-    if (window.chrome && chrome.tabs) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const url = tabs[0]?.url;
-        setCurrentUrl(url);
+    const fetchCurrentUrl = async () => {
+      async function fetchCurrentUrl() {
+        const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+        setCurrentUrl(tab.url);
+      }
+      fetchCurrentUrl().then(() => {
+        console.log('Current URL:', currentUrl);
+      }
+      ).catch((error) => {
+        console.error('Error fetching current URL:', error);
       });
-    }
+    };
+
+    fetchCurrentUrl();
   }, []);
 
   if (loading) return <div>Loading...</div>;
