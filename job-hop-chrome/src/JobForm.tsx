@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useAuth } from './AuthProvider';
+import { Box, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
 
 const JobForm: React.FC = () => {
   const { refreshSession } = useAuth();
@@ -35,33 +36,91 @@ const JobForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8, width: 600 }}>
-      <h2>Submit Job</h2>
-      <input
-        id="company"
-        placeholder="Company Name"
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: 360,
+        bgcolor: '#1f2937',
+        color: '#f3f4f6',
+        p: 4,
+        borderRadius: 2,
+        boxShadow: 3,
+        mx: 'auto',
+        mt: 6,
+      }}
+    >
+      <Typography variant="h6" mb={1} color="#f3f4f6">Submit Job</Typography>
+      <TextField
+        label="Company Name"
         value={company}
         onChange={e => setCompany(e.target.value)}
         required
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ style: { color: '#d1d5db' } }}
+        InputProps={{ style: { color: '#f3f4f6' } }}
+        sx={{
+          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+        }}
       />
-      <input
-        id="title"
-        placeholder="Job Title"
+      <TextField
+        label="Job Title"
         value={title}
         onChange={e => setTitle(e.target.value)}
         required
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ style: { color: '#d1d5db' } }}
+        InputProps={{ style: { color: '#f3f4f6' } }}
+        sx={{
+          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+        }}
       />
-      <input
-        id="url"
-        placeholder="Job URL"
+      <TextField
+        label="Job URL"
         value={url}
         onChange={e => setUrl(e.target.value)}
         required
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ style: { color: '#d1d5db' } }}
+        InputProps={{ style: { color: '#f3f4f6' } }}
+        sx={{
+          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+        }}
       />
-      <button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
-      {msg && <div style={{ color: msgColor }}>{msg}</div>}
-      <button type="button" onClick={handleLogout} style={{ marginTop: 8 }}>Logout</button>
-    </form>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={loading}
+        sx={{ mt: 2, fontWeight: 'bold' }}
+      >
+        {loading ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : 'Submit'}
+      </Button>
+      {msg && (
+        <Alert severity={msgColor === 'red' ? 'error' : 'success'} sx={{ mt: 2 }}>
+          {msg}
+        </Alert>
+      )}
+      <Button
+        type="button"
+        onClick={handleLogout}
+        color="error"
+        variant="outlined"
+        sx={{ mt: 2, fontWeight: 'bold' }}
+        disabled={loading}
+      >
+        Logout
+      </Button>
+    </Box>
   );
 };
 
