@@ -37,8 +37,8 @@ export default function LoginForm() {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
-      <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center">Login</Typography>
+    <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400, bgcolor: 'background.paper', borderRadius: 3 }}>
+      <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center" color="text.primary">Login</Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       <form onSubmit={handleLogin}>
         <TextField
@@ -66,7 +66,7 @@ export default function LoginForm() {
             color="primary"
             disabled={loading}
             fullWidth
-            sx={{ fontWeight: 'bold', py: 1.5 }}
+            sx={{ fontWeight: 'bold', py: 1.5, borderRadius: 2 }}
           >
             {loading ? <CircularProgress size={24} /> : 'Login'}
           </Button>
@@ -76,7 +76,7 @@ export default function LoginForm() {
             fullWidth
             onClick={() => router.push('/register')}
             disabled={loading}
-            sx={{ fontWeight: 'bold', py: 1.5 }}
+            sx={{ fontWeight: 'bold', py: 1.5, borderRadius: 2 }}
           >
             Register
           </Button>

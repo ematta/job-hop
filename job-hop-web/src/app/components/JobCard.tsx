@@ -15,17 +15,19 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
   <Card
     sx={{
       borderRadius: 3,
-      minWidth: 180,
-      maxWidth: 240,
+      minWidth: 150,
+      maxWidth: 150,
+      minHeight: 50,
+      maxHeight: 50,
       p: 1,
-      m: '10px', // 10px margin for spacing inside column
+      mb: 0.5, // vertical margin between cards (15px)
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
       transition: 'transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s',
       boxShadow: 1,
-      bgcolor: '#1f2937',
-      color: '#f3f4f6',
+      bgcolor: 'background.paper',
+      color: 'text.primary',
       '&:hover': {
         transform: 'scale(1.07)',
         boxShadow: 6,
@@ -42,20 +44,13 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
     <span style={{ cursor: 'grab', marginRight: 8, display: 'flex', alignItems: 'center' }} className="drag-handle">
       <DragIndicatorIcon fontSize="small" />
     </span>
-    <CardContent sx={{ p: 1, flex: 1 }}>
+    <CardContent sx={{ p: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', height: '100%' }}>
       <Typography
         className="jobcard-company"
         variant="body2"
-        sx={{ fontSize: 10, fontWeight: 600, mb: 0.5, transition: 'font-size 0.2s', color: '#f3f4f6' }}
+        sx={{ fontSize: 10, fontWeight: 'bold', mb: -1, transition: 'font-size 0.2s', color: 'text.primary' }}
       >
         {job.company_name}
-      </Typography>
-      <Typography
-        className="jobcard-title"
-        variant="body2"
-        sx={{ fontSize: 8, color: '#d1d5db', transition: 'font-size 0.2s' }}
-      >
-        {job.title}
       </Typography>
     </CardContent>
   </Card>

@@ -22,7 +22,7 @@ export default function ResumeUpload({ uploading, onUpload, fileInputRef }: Resu
         color="primary"
         onClick={() => fileInputRef.current?.click()}
         disabled={uploading}
-        sx={{ mb: 1 }}
+        sx={{ mb: 1, borderRadius: 2 }}
       >
         {uploading ? 'Uploading...' : 'Upload PDF Resume'}
       </Button>

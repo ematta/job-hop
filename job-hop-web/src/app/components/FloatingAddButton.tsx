@@ -27,7 +27,12 @@ const FloatingAddButton: React.FC<FloatingAddButtonProps> = ({ onClick, 'aria-la
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      p: 0
+      p: 0,
+      bgcolor: 'primary.main',
+      color: 'primary.contrastText',
+      '&:hover': {
+        bgcolor: 'primary.dark',
+      },
     }}
   >
     <AddIcon sx={{ fontSize: 36 }} />

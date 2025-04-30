@@ -19,7 +19,7 @@ export default function ResumeList({ resumes, userId, loading, getFileFromStorag
     return <Typography color="text.secondary" align="center">You haven&apos;t uploaded any resumes yet.</Typography>;
   }
   return (
-    <List>
+    <List sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
       {resumes.map((name) => (
         <ListItem key={name} secondaryAction={
           <Link
@@ -38,7 +38,7 @@ export default function ResumeList({ resumes, userId, loading, getFileFromStorag
             Download
           </Link>
         }>
-          <ListItemText primary={name} primaryTypographyProps={{ noWrap: true }} />
+          <ListItemText primary={name} primaryTypographyProps={{ noWrap: true, color: 'text.primary' }} />
         </ListItem>
       ))}
     </List>

@@ -11,14 +11,14 @@ interface DeleteJobDialogProps {
 
 const DeleteJobDialog: React.FC<DeleteJobDialogProps> = ({ open, jobTitle, companyName, onCancel, onConfirm }) => (
   <Dialog open={open} onClose={onCancel}>
-    <DialogTitle>Delete Job</DialogTitle>
+    <DialogTitle sx={{ color: 'text.primary' }}>Delete Job</DialogTitle>
     <DialogContent>
-      <DialogContentText>
+      <DialogContentText sx={{ color: 'text.secondary' }}>
         Are you sure you want to delete the job {jobTitle} at {companyName}? This action cannot be undone.
       </DialogContentText>
     </DialogContent>
     <DialogActions>
-      <Button onClick={onCancel}>Cancel</Button>
+      <Button onClick={onCancel} variant="outlined">Cancel</Button>
       <Button onClick={onConfirm} color="error" variant="contained">Delete</Button>
     </DialogActions>
   </Dialog>
