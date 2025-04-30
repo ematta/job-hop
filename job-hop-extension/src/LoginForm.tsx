@@ -51,20 +51,26 @@ const LoginForm: React.FC = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
-        width: 360,
-        bgcolor: '#1f2937',
-        color: '#f3f4f6',
-        p: 4,
-        borderRadius: 2,
-        boxShadow: 3,
+        gap: 1.2,
+        width: 340,
+        bgcolor: '#f8fafc',
+        color: '#1e293b',
+        p: 2,
+        borderRadius: 3,
+        boxShadow: 4,
         mx: 'auto',
         mt: 6,
+        minHeight: 340,
       }}
     >
-      <Typography variant="h6" mb={1} color="#f3f4f6">Login</Typography>
+      <Typography variant="h6" mb={0.5} color="#1e293b" fontWeight={700} letterSpacing={1} textAlign="center">
+        Job-Hop
+      </Typography>
+      <Typography variant="h6" mb={0.5} color="#1e293b" fontWeight={700} letterSpacing={1} textAlign="center">
+        Login
+      </Typography>
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+        <Alert severity="error" sx={{ mb: 1.2, borderRadius: 2 }}>{error}</Alert>
       )}
       <TextField
         label="Email"
@@ -73,13 +79,13 @@ const LoginForm: React.FC = () => {
         onChange={e => setEmail(e.target.value)}
         required
         fullWidth
-        margin="normal"
+        margin="dense"
         autoComplete="email"
-        InputLabelProps={{ style: { color: '#d1d5db' } }}
-        InputProps={{ style: { color: '#f3f4f6' } }}
+        InputLabelProps={{ style: { color: '#64748b' } }}
+        InputProps={{ style: { color: '#1e293b', background: '#f1f5f9', borderRadius: 2 } }}
         sx={{
-          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+          '& .MuiOutlinedInput-root': { bgcolor: '#f1f5f9', borderRadius: 2 },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' },
         }}
       />
       <TextField
@@ -89,13 +95,13 @@ const LoginForm: React.FC = () => {
         onChange={e => setPassword(e.target.value)}
         required
         fullWidth
-        margin="normal"
+        margin="dense"
         autoComplete="current-password"
-        InputLabelProps={{ style: { color: '#d1d5db' } }}
-        InputProps={{ style: { color: '#f3f4f6' } }}
+        InputLabelProps={{ style: { color: '#64748b' } }}
+        InputProps={{ style: { color: '#1e293b', background: '#f1f5f9', borderRadius: 2 } }}
         sx={{
-          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+          '& .MuiOutlinedInput-root': { bgcolor: '#f1f5f9', borderRadius: 2 },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#cbd5e1' },
         }}
       />
       <Button
@@ -103,7 +109,15 @@ const LoginForm: React.FC = () => {
         variant="contained"
         color="primary"
         disabled={loading}
-        sx={{ mt: 2, fontWeight: 'bold' }}
+        sx={{
+          mt: 1.2,
+          fontWeight: 'bold',
+          borderRadius: 2,
+          boxShadow: 2,
+          textTransform: 'none',
+          fontSize: 16,
+          py: 0.8,
+        }}
       >
         {loading ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : 'Login'}
       </Button>

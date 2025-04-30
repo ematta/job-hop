@@ -92,8 +92,8 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
         minHeight: 340, // reduced min height
       }}
     >
-      <Typography variant="h6" mb={0.5} color="#1e293b" fontWeight={700} letterSpacing={1}>
-        Submit Job
+      <Typography variant="h6" mb={0.5} color="#1e293b" fontWeight={700} letterSpacing={1} textAlign="center">
+        Job-Hop
       </Typography>
       {/* User ID field is visually hidden but present in the DOM for form submission */}
       <TextField
