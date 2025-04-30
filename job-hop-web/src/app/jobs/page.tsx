@@ -113,7 +113,7 @@ const JobsPage = () => {
     setLoadingResumes(true);
     setError('');
     // Fetch jobs
-    supabase.from('job').select('*').eq('user_id', userId).then(({ data, error }) => {
+    supabase.from('job').select('*').eq('userId', userId).then(({ data, error }) => {
       if (!error) setJobs(data || []);
       else setError('Failed to load jobs');
       setLoadingJobs(false);
@@ -133,7 +133,7 @@ const JobsPage = () => {
     if (!userId) return;
     const channel = supabase
       .channel('public:job')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'job', filter: `user_id=eq.${userId}` }, payload => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'job', filter: `userId=eq.${userId}` }, payload => {
         if (payload.eventType === 'UPDATE') {
           setJobs(prev => prev.map(j => j.id === payload.new.id ? { ...j, ...payload.new } : j));
         } else if (payload.eventType === 'INSERT') {
@@ -189,7 +189,7 @@ const JobsPage = () => {
             company_name: form.company_name,
             title: form.title,
             url: form.url,
-            user_id: userId,
+            userId,
           },
         ]);
         if (error) throw error;

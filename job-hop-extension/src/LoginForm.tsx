@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { useAuth } from './AuthProvider';
 import { Box, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
@@ -6,18 +6,42 @@ import { Box, Typography, TextField, Button, Alert, CircularProgress } from '@mu
 const LoginForm: React.FC = () => {
   const { refreshSession } = useAuth();
   const [email, setEmail] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // On mount, check if user is already logged in
+  useEffect(() => {
+    const userStr = localStorage.getItem('supabase.user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        if (user?.id || user?.uuid) {
+          setUserId(user.id || user.uuid);
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error, data } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
+    const { user } = data || {};
+    setUserId(user?.id || null);
     if (error) setError(error.message);
-    else refreshSession();
+    else {
+      // Save user to localStorage for session persistence
+      if (user) {
+        localStorage.setItem('supabase.user', JSON.stringify(user));
+      }
+      refreshSession();
+    }
   };
 
   return (

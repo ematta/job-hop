@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { supabase } from './supabaseClient';
 import { useAuth } from './AuthProvider';
 import { Box, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
 
 interface JobFormProps {
   prefillUrl?: string;
+  userId?: string;
 }
 
 interface JobFormState {
@@ -12,6 +13,7 @@ interface JobFormState {
   title: string;
   url: string;
   status: string;
+  userId?: string; // Added user_id as an optional field
 }
 
 const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
@@ -25,13 +27,26 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
   const [msg, setMsg] = useState<string | null>(null);
   const [msgColor, setMsgColor] = useState<'red' | 'green'>('green');
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (prefillUrl) setForm(f => ({ ...f, url: prefillUrl }));
-  }, [prefillUrl]);
+    // Set userId from localStorage on mount
+    const userStr = localStorage.getItem('supabase.user');
+    let userId;
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        userId = user?.id || user?.uuid || null;
+        setUserId(userId);
+        setForm(f => ({ ...f, userId: user?.id || user?.uuid || '' }));
+      } catch {
+        console.error('Error parsing user data from localStorage:', userStr);
+        setUserId(null);
+      }
+    }
+    if (prefillUrl && userId) setForm(f => ({ ...f, url: prefillUrl }));
+  }, [prefillUrl, userId]);
 
-  console.log('JobForm component rendered');
-  console.log('prefillUrl:', prefillUrl);
 
   const handleChange = (field: keyof JobFormState, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -77,6 +92,21 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
       }}
     >
       <Typography variant="h6" mb={1} color="#f3f4f6">Submit Job</Typography>
+      <TextField
+        label="User ID"
+        value={form.userId}
+        required
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ style: { color: '#d1d5db' } }}
+        InputProps={{ style: { color: '#f3f4f6' } }}
+        sx={{
+          '& .MuiOutlinedInput-root': { bgcolor: '#18181b' },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: '#334155' },
+        }}
+        disabled
+        hidden
+      />
       <TextField
         label="Company Name"
         value={form.company_name}
