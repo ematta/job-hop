@@ -135,7 +135,7 @@ const JobsPage = () => {
         if (payload.eventType === 'UPDATE') {
           setJobs(prev => prev.map(j => j.id === payload.new.id ? { ...j, ...payload.new } : j));
         } else if (payload.eventType === 'INSERT') {
-          setJobs(prev => [...prev, payload.new]);
+          setJobs(prev => [...prev, payload.new as Job]);
         } else if (payload.eventType === 'DELETE') {
           setJobs(prev => prev.filter(j => j.id !== payload.old.id));
         }
@@ -256,7 +256,8 @@ const JobsPage = () => {
   };
 
   // Drag and drop handlers
-  const handleDragEnd = async (event: any) => {
+  const handleDragEnd = async (event: import('@dnd-kit/core').DragEndEvent) => {
+    if (!event) return;
     const { active, over } = event;
     if (!over) return;
     const jobId = active.id;
@@ -265,7 +266,7 @@ const JobsPage = () => {
     if (!job || job.status === targetCol) return;
     // Update status in Supabase
     await supabase.from('job').update({ status: targetCol }).eq('id', jobId);
-    setJobs(jobs.map(j => j.id === jobId ? { ...j, status: targetCol } : j));
+    setJobs(jobs.map(j => j.id === jobId ? { ...j, status: String(targetCol) } : j));
   };
 
   // Group jobs by status

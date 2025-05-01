@@ -91,21 +91,21 @@ export default function ResumesPage() {
 
   if (!userId) {
     return (
-      <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="#111827">
-        <Paper elevation={3} sx={{ bgcolor: '#1f2937', p: 4, width: '100%', maxWidth: 400, textAlign: 'center' }}>
-          <Typography variant="h4" fontWeight="bold" mb={2} color="#f3f4f6">Resumes</Typography>
-          <Typography color="#d1d5db">You must be logged in to view your resumes.</Typography>
+      <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center">
+        <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400, textAlign: 'center' }}>
+          <Typography variant="h4" fontWeight="bold" mb={2}>Resumes</Typography>
+          <Typography>You must be logged in to view your resumes.</Typography>
         </Paper>
       </Box>
     );
   }
 
   return (
-    <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="#111827">
-      <Paper elevation={3} sx={{ bgcolor: '#1f2937', p: 4, width: '100%', maxWidth: 400 }}>
-        <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center" color="#f3f4f6">Your Resumes</Typography>
-        {error && <Alert severity="error" sx={{ mb: 2, bgcolor: '#7f1d1d', color: '#f3f4f6' }}>{error}</Alert>}
-        {success && <Alert severity="success" sx={{ mb: 2, bgcolor: '#166534', color: '#f3f4f6' }}>{success}</Alert>}
+    <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center">
+      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
+        <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center">Your Resumes</Typography>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
         <ResumeUpload uploading={uploading} onUpload={handleUpload} fileInputRef={fileInputRef} />
         <ResumeList resumes={resumes} userId={userId} loading={loading} getFileFromStorage={getFileFromStorage} />
       </Paper>
