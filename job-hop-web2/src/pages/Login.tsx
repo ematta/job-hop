@@ -1,5 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react';
+import LoginModal from './LoginModal';
 
-const Login: React.FC = () => <h2>Login Page</h2>
+const Login: React.FC = () => {
+  const [open, setOpen] = useState(true);
+  return <LoginModal open={open} onClose={() => setOpen(false)} />;
+};
 
-export default Login
+export default Login;
