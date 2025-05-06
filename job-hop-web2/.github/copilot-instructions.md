@@ -1,3 +1,0 @@
-<!-- Use this file to provide workspace-specific custom instructions to Copilot. For more details, visit https://code.visualstudio.com/docs/copilot/copilot-customization#_use-a-githubcopilotinstructionsmd-file -->
-
-This project is a Vite + React + TypeScript client-side app using React Router v7 for routing. It uses Supabase for backend and Material-UI (MUI) for UI components. Do not use any server-side rendering or Next.js patterns. Organize all pages in src/pages/ and use client-side navigation only.

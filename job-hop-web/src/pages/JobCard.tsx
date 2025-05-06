@@ -25,46 +25,67 @@ interface JobCardProps {
 const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => (
   <Card
     sx={{
-      borderRadius: 3,
-      minWidth: 150,
-      maxWidth: 150,
-      minHeight: 50,
-      maxHeight: 50,
-      p: 1,
-      mb: 0.5,
+      borderRadius: 99,
+      minWidth: 0,
+      width: '100%',
+      maxWidth: 220,
+      height: 40,
+      p: 0,
+      mb: 1.2,
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
-      transition: 'transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s',
       boxShadow: 1,
       bgcolor: 'background.paper',
       color: 'text.primary',
+      overflow: 'hidden',
+      transition: 'transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s',
       '&:hover': {
-        transform: 'scale(1.07)',
+        transform: 'scale(1.04)',
         boxShadow: 6,
         '& .jobcard-company': {
-          fontSize: 14,
-        },
-        '& .jobcard-title': {
-          fontSize: 12,
+          fontSize: 15,
         },
       },
     }}
     onClick={onEdit ? () => onEdit(job) : undefined}
   >
     <span
-      style={{ cursor: 'grab', marginRight: 8, display: 'flex', alignItems: 'center' }}
+      style={{ cursor: 'grab', marginLeft: 12, marginRight: 10, display: 'flex', alignItems: 'center', flexShrink: 0 }}
       className="drag-handle"
       {...dragHandleProps}
       onClick={e => { e.stopPropagation(); }}
     >
       <DragIndicatorIcon fontSize="small" />
     </span>
-    <CardContent sx={{ p: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', height: '100%' }}>
+    <CardContent
+      sx={{
+        p: 0,
+        pr: 3,
+        pl: 0,
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        height: '100%',
+        minWidth: 0,
+        overflow: 'hidden',
+      }}
+    >
       <Typography
         className="jobcard-company"
         variant="body2"
-        sx={{ fontSize: 10, fontWeight: 'bold', mb: -1, transition: 'font-size 0.2s', color: 'text.primary' }}
+        sx={{
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'text.primary',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          width: '100%',
+          minWidth: 0,
+          textAlign: 'center',
+        }}
+        title={job.company_name}
       >
         {job.company_name}
       </Typography>

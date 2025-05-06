@@ -51,25 +51,28 @@ function DroppableColumn({ id, children, isEmpty }: { id: string; children: Reac
       sx={{
         flex: 1,
         minWidth: 220,
+        maxWidth: 320,
         bgcolor: isOver ? '#334155' : '#18181b',
         border: isOver ? '2px solid #38bdf8' : '2px solid transparent',
         borderRadius: 2,
         p: 2,
-        minHeight: 500,
-        transition: 'background 0.2s, border 0.2s',
+        height: 500,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
-        gap: 1,
         position: 'relative',
+        transition: 'background 0.2s, border 0.2s',
       }}
     >
-      {isEmpty && (
-        <Typography sx={{ color: '#64748b', width: '100%', textAlign: 'center', mt: 4, fontStyle: 'italic' }}>
-          Empty
-        </Typography>
-      )}
-      {children}
+      <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{id}</Typography>
+      <Box sx={{ flex: 1, width: '100%', overflowY: 'auto', pr: 1 }}>
+        {isEmpty && (
+          <Typography sx={{ color: '#64748b', width: '100%', textAlign: 'center', mt: 4, fontStyle: 'italic' }}>
+            Empty
+          </Typography>
+        )}
+        {children}
+      </Box>
     </Box>
   );
 }
@@ -243,8 +246,16 @@ const JobsKanban: React.FC = () => {
     const targetCol = over.id;
     const job = jobs.find(j => j.id === jobId);
     if (!job || job.status === targetCol) return;
-    await supabase.from('job').update({ status: targetCol }).eq('id', jobId);
-    setJobs(jobs.map(j => j.id === jobId ? { ...j, status: String(targetCol) } : j));
+    setError("");
+    setSuccess("");
+    try {
+      const { error } = await supabase.from('job').update({ status: targetCol }).eq('id', jobId);
+      if (error) throw error;
+      setJobs(jobs.map(j => j.id === jobId ? { ...j, status: String(targetCol) } : j));
+      setSuccess('Job status updated');
+    } catch (e) {
+      setError(`Failed to update job status: ${(e as Error).message}`);
+    }
   };
 
   const jobsByStatus: Record<string, Job[]> = {
