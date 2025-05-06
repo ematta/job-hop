@@ -27,7 +27,7 @@ function getUserId() {
   }
 }
 
-function DraggableJobCard({ job, children }: { job: Job; children: React.ReactNode }) {
+function DraggableJobCard({ job, children }: { job: Job; children: (handleProps: { dragHandleProps: React.HTMLAttributes<HTMLDivElement> }) => React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: job.id });
   return (
     <div
@@ -37,10 +37,8 @@ function DraggableJobCard({ job, children }: { job: Job; children: React.ReactNo
         opacity: isDragging ? 0.5 : 1,
         marginBottom: 12,
       }}
-      {...attributes}
-      {...listeners}
     >
-      {children}
+      {children({ dragHandleProps: { ...attributes, ...listeners } })}
     </div>
   );
 }
@@ -283,15 +281,18 @@ const JobsKanban: React.FC = () => {
                 <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{col.label}</Typography>
                 {jobsByStatus[col.key].map(job => (
                   <DraggableJobCard key={job.id} job={job}>
-                    <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
-                      <JobCard
-                        job={job}
-                        onEdit={handleOpenEdit}
-                        resumes={resumes}
-                        onDelete={handleDeleteClick}
-                        onAttachResume={handleAttachResume}
-                      />
-                    </Box>
+                    {({ dragHandleProps }) => (
+                      <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
+                        <JobCard
+                          job={job}
+                          onEdit={handleOpenEdit}
+                          resumes={resumes}
+                          onDelete={handleDeleteClick}
+                          onAttachResume={handleAttachResume}
+                          dragHandleProps={dragHandleProps}
+                        />
+                      </Box>
+                    )}
                   </DraggableJobCard>
                 ))}
               </DroppableColumn>

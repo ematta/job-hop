@@ -19,9 +19,10 @@ interface JobCardProps {
   onDelete?: (job: Job) => void;
   onAttachResume?: (jobId: string, resumeId: string) => Promise<void>;
   resumes?: { id: string; name: string }[];
+  dragHandleProps?: React.HTMLAttributes<HTMLSpanElement>;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
+const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => (
   <Card
     sx={{
       borderRadius: 3,
@@ -51,7 +52,12 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
     }}
     onClick={onEdit ? () => onEdit(job) : undefined}
   >
-    <span style={{ cursor: 'grab', marginRight: 8, display: 'flex', alignItems: 'center' }} className="drag-handle">
+    <span
+      style={{ cursor: 'grab', marginRight: 8, display: 'flex', alignItems: 'center' }}
+      className="drag-handle"
+      {...dragHandleProps}
+      onClick={e => { e.stopPropagation(); }}
+    >
       <DragIndicatorIcon fontSize="small" />
     </span>
     <CardContent sx={{ p: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', height: '100%' }}>

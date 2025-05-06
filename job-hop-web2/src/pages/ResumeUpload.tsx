@@ -4,7 +4,7 @@ import { Box, Button, CircularProgress } from '@mui/material';
 interface ResumeUploadProps {
   uploading: boolean;
   onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const ResumeUpload: React.FC<ResumeUploadProps> = ({ uploading, onUpload, fileInputRef }) => {
@@ -20,7 +20,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ uploading, onUpload, fileIn
       <Button
         variant="contained"
         color="primary"
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => fileInputRef?.current?.click()}
         disabled={uploading}
         fullWidth
       >
