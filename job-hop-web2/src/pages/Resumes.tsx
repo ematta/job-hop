@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Box, Typography, Paper, Alert } from '@mui/material';
 import { supabase } from '../supabaseClient';
-import ResumeUpload from './ResumeUpload';
-import ResumeList from './ResumeList';
+import ResumeUpload from './ResumeUpload.tsx';
+import ResumeList from './ResumeList.tsx';
 
 function getUserId() {
   const userStr = localStorage.getItem('supabase.user');

@@ -72,26 +72,24 @@ const NavMenu: React.FC = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {isLoggedIn ? (
-          <>
-            <MenuItem onClick={handleLogout}>
+        {isLoggedIn ? [
+            <MenuItem onClick={handleLogout} key="logout">
               <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>
               Logout
-            </MenuItem>
-            <MenuItem onClick={() => handleNav('/resumes')}>
+            </MenuItem>,
+            <MenuItem onClick={() => handleNav('/resumes')} key="resumes">
               <ListItemIcon><DescriptionIcon fontSize="small" /></ListItemIcon>
               Resumes
-            </MenuItem>
-            <MenuItem onClick={() => handleNav('/jobs')}>
+            </MenuItem>,
+            <MenuItem onClick={() => handleNav('/jobs')} key="jobs">
               <ListItemIcon><WorkIcon fontSize="small" /></ListItemIcon>
               Jobs
-            </MenuItem>
-            <MenuItem onClick={() => handleNav('/profile')}>
+            </MenuItem>,
+            <MenuItem onClick={() => handleNav('/profile')} key="profile">
               <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
               Profile
             </MenuItem>
-          </>
-        ) : (
+          ] : (
           <MenuItem onClick={handleLogin}>
             <ListItemIcon><LoginIcon fontSize="small" /></ListItemIcon>
             Login

@@ -1,4 +1,5 @@
-import { List, ListItem, ListItemText, Link, Box, CircularProgress, Typography } from '@mui/material';
+import React from 'react';
+import { List, ListItem, ListItemText, CircularProgress, Button } from '@mui/material';
 
 interface ResumeListProps {
   resumes: string[];
@@ -8,37 +9,29 @@ interface ResumeListProps {
 }
 
 const ResumeList: React.FC<ResumeListProps> = ({ resumes, userId, loading, getFileFromStorage }) => {
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={60}>
-        <CircularProgress size={28} />
-      </Box>
-    );
-  }
-  if (resumes.length === 0) {
-    return <Typography color="text.secondary" align="center">You haven&apos;t uploaded any resumes yet.</Typography>;
-  }
+  const handleDownload = async (fileName: string) => {
+    const filePath = `${userId}/${fileName}`;
+    try {
+      const link = await getFileFromStorage(filePath);
+      link.click();
+    } catch {
+      alert('Failed to download file.');
+    }
+  };
+
+  if (loading) return <CircularProgress />;
+
+  if (!resumes.length) return <div>No resumes found.</div>;
+
   return (
-    <List sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
-      {resumes.map((name) => (
-        <ListItem key={name} secondaryAction={
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="hover"
-            color="primary"
-            variant="body2"
-            onClick={async (e) => {
-              e.preventDefault();
-              const link = await getFileFromStorage(`${userId}/${name}`);
-              link.click();
-              URL.revokeObjectURL(link.href);
-            }}
-          >
+    <List>
+      {resumes.map((resume) => (
+        <ListItem key={resume} secondaryAction={
+          <Button variant="outlined" onClick={() => handleDownload(resume)}>
             Download
-          </Link>
+          </Button>
         }>
-          <ListItemText primary={name} primaryTypographyProps={{ noWrap: true, color: 'text.primary' }} />
+          <ListItemText primary={resume} />
         </ListItem>
       ))}
     </List>
