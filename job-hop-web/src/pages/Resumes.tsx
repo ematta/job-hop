@@ -1,17 +1,10 @@
-'use client';
-import { useEffect, useState, useRef } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
+import React, { useEffect, useState, useRef } from 'react';
 import { Box, Typography, Paper, Alert } from '@mui/material';
-import ResumeUpload from '../components/ResumeUpload';
-import ResumeList from '../components/ResumeList';
-
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from '../supabaseClient';
+import ResumeUpload from './ResumeUpload.tsx';
+import ResumeList from './ResumeList.tsx';
 
 function getUserId() {
-  if (typeof window === 'undefined') return null;
   const userStr = localStorage.getItem('supabase.user');
   if (!userStr) return null;
   try {
@@ -28,24 +21,21 @@ function getFileFromStorage(filePath: string) {
       if (error) {
         throw new Error('Failed to download file: ' + error.message);
       }
-      // Create a blob URL for the file
       const blobUrl = URL.createObjectURL(data);
-      // Create a link element to download the file
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = filePath.split('/').pop() || 'resume.pdf'; // Use the file name from the path
+      link.download = filePath.split('/').pop() || 'resume.pdf';
       return link;
-    }
-  );
+    });
 }
 
-export default function ResumesPage() {
+const Resumes: React.FC = () => {
   const [resumes, setResumes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const userId = getUserId();
 
   useEffect(() => {
@@ -111,4 +101,6 @@ export default function ResumesPage() {
       </Paper>
     </Box>
   );
-}
+};
+
+export default Resumes;

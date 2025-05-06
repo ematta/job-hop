@@ -1,9 +1,9 @@
-"use client";
-import { Box, Typography, Paper, Link } from '@mui/material';
-import Image from 'next/image';
+import React from 'react';
+import { Box, Typography, Paper, Link as MuiLink } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 
-export default function Home() {
+const Home: React.FC = () => {
   const theme = useTheme();
   return (
     <>
@@ -16,7 +16,7 @@ export default function Home() {
             <Typography color={theme.palette.text.secondary} textAlign="center" mb={3}>
               Your job search starts here!
             </Typography>
-            <Image src="/job_hop_logo.png" alt="Job Hop Logo" width={150} height={150} style={{ display: 'block', margin: '0 auto' }} />
+            <img src="/job_hop_logo.png" alt="Job Hop Logo" width={150} height={150} style={{ display: 'block', margin: '0 auto' }} />
           </Paper>
         </Box>
       </main>
@@ -24,23 +24,25 @@ export default function Home() {
         <Box bgcolor="#09090b" color="#d1d5db" py={2} textAlign="center" borderTop={1} borderColor="#27272a">
           <Typography variant="body2">&copy; {new Date().getFullYear()} Job Hop. All rights reserved.</Typography>
           <Typography variant="body2">
-            <Link href="/privacy-policy" color="primary" underline="hover">Privacy Policy</Link> |{' '}
-            <Link href="/terms-of-service" color="primary" underline="hover">Terms of Service</Link>
+            <MuiLink component={Link} to="/privacy-policy" color="primary" underline="hover">Privacy Policy</MuiLink> |{' '}
+            <MuiLink component={Link} to="/terms-of-service" color="primary" underline="hover">Terms of Service</MuiLink>
           </Typography>
           <Typography variant="body2">
-            <Link href="/contact" color="primary" underline="hover">Contact Us</Link>
+            <MuiLink component={Link} to="/contact" color="primary" underline="hover">Contact Us</MuiLink>
           </Typography>
           <Typography variant="body2">
-            <Link href="/about" color="primary" underline="hover">About Us</Link>
+            <MuiLink component={Link} to="/about" color="primary" underline="hover">About Us</MuiLink>
           </Typography>
           <Typography variant="body2">
-            <Link href="/help" color="primary" underline="hover">Help Center</Link>
+            <MuiLink component={Link} to="/help" color="primary" underline="hover">Help Center</MuiLink>
           </Typography>
           <Typography variant="body2">
-            <Link href="/feedback" color="primary" underline="hover">Feedback</Link>
+            <MuiLink component={Link} to="/feedback" color="primary" underline="hover">Feedback</MuiLink>
           </Typography>
         </Box>
       </footer>
     </>
   );
-}
+};
+
+export default Home;

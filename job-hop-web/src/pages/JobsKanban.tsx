@@ -1,26 +1,22 @@
-'use client';
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Alert, Snackbar } from '@mui/material';
 import { DndContext, closestCenter, useDraggable, useDroppable } from '@dnd-kit/core';
-import supabase from '../supabaseClient';
-import JobModal from '../components/JobModal';
-import DeleteJobDialog from '../components/DeleteJobDialog';
-import JobCard from '../components/JobCard';
-import FloatingAddButton from '../components/FloatingAddButton';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { supabase } from '../supabaseClient';
+import JobModal from './JobModal.tsx';
+import DeleteJobDialog from './DeleteJobDialog.tsx';
+import JobCard from './JobCard.tsx';
+import type { Job } from './JobCard.tsx';
+import FloatingAddButton from './FloatingAddButton.tsx';
 
-interface Job {
-  id: string;
-  company_name: string;
-  title: string;
-  description?: string;
-  url?: string;
-  resume_id?: string;
-  cover_letter?: string;
-  status: string;
-}
+const KANBAN_COLUMNS = [
+  { key: 'Open', label: 'Open' },
+  { key: 'Applied', label: 'Applied' },
+  { key: 'Interviewing', label: 'Interviewing' },
+  { key: 'Closed', label: 'Closed' },
+];
 
 function getUserId() {
-  if (typeof window === 'undefined') return null;
   const userStr = localStorage.getItem('supabase.user');
   if (!userStr) return null;
   try {
@@ -31,15 +27,7 @@ function getUserId() {
   }
 }
 
-const KANBAN_COLUMNS = [
-  { key: 'Open', label: 'Open' },
-  { key: 'Applied', label: 'Applied' },
-  { key: 'Interviewing', label: 'Interviewing' },
-  { key: 'Closed', label: 'Closed' },
-];
-
-// Draggable wrapper for JobCard
-function DraggableJobCard({ job, children }: { job: Job; children: React.ReactNode }) {
+function DraggableJobCard({ job, children }: { job: Job; children: (handleProps: { dragHandleProps: React.HTMLAttributes<HTMLDivElement> }) => React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: job.id });
   return (
     <div
@@ -49,15 +37,12 @@ function DraggableJobCard({ job, children }: { job: Job; children: React.ReactNo
         opacity: isDragging ? 0.5 : 1,
         marginBottom: 12,
       }}
-      {...attributes}
-      {...listeners}
     >
-      {children}
+      {children({ dragHandleProps: { ...attributes, ...listeners } })}
     </div>
   );
 }
 
-// Droppable Kanban column
 function DroppableColumn({ id, children, isEmpty }: { id: string; children: React.ReactNode; isEmpty: boolean }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
@@ -73,9 +58,9 @@ function DroppableColumn({ id, children, isEmpty }: { id: string; children: Reac
         minHeight: 500,
         transition: 'background 0.2s, border 0.2s',
         display: 'flex',
-        flexDirection: 'column', // changed from 'row' to 'column'
-        alignItems: 'flex-start', // ensure cards align to top
-        gap: 1, // reduce gap between cards
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: 1,
         position: 'relative',
       }}
     >
@@ -89,7 +74,7 @@ function DroppableColumn({ id, children, isEmpty }: { id: string; children: Reac
   );
 }
 
-const JobsPage = () => {
+const JobsKanban: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [resumes, setResumes] = useState<{ id: string; name: string }[]>([]);
   const [openModal, setOpenModal] = useState(false);
@@ -110,13 +95,11 @@ const JobsPage = () => {
     setLoadingJobs(true);
     setLoadingResumes(true);
     setError('');
-    // Fetch jobs
     supabase.from('job').select('*').eq('userId', userId).then(({ data, error }) => {
       if (!error) setJobs(data || []);
       else setError('Failed to load jobs');
       setLoadingJobs(false);
     });
-    // Fetch resumes (from storage)
     supabase.storage.from('resumes').list(`${userId}/`, { limit: 100 }).then(({ data, error }) => {
       if (!error) {
         setResumes((data || []).map(f => ({ id: f.name, name: f.name })));
@@ -172,7 +155,6 @@ const JobsPage = () => {
     setForm(prev => ({ ...prev, [field]: value }));
   };
 
-  // Add or edit job
   const handleSubmit = async () => {
     if (!form.company_name || !form.title) {
       setError('Company name and job title are required');
@@ -209,7 +191,6 @@ const JobsPage = () => {
     }
   };
 
-  // Delete job
   const handleDelete = async (jobId: string) => {
     setError('');
     setSuccess('');
@@ -241,7 +222,6 @@ const JobsPage = () => {
     setJobToDelete(null);
   };
 
-  // Attach resume to job
   const handleAttachResume = async (jobId: string, resumeId: string) => {
     setError('');
     setSuccess('');
@@ -255,8 +235,7 @@ const JobsPage = () => {
     }
   };
 
-  // Drag and drop handlers
-  const handleDragEnd = async (event: import('@dnd-kit/core').DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     if (!event) return;
     const { active, over } = event;
     if (!over) return;
@@ -264,12 +243,10 @@ const JobsPage = () => {
     const targetCol = over.id;
     const job = jobs.find(j => j.id === jobId);
     if (!job || job.status === targetCol) return;
-    // Update status in Supabase
     await supabase.from('job').update({ status: targetCol }).eq('id', jobId);
     setJobs(jobs.map(j => j.id === jobId ? { ...j, status: String(targetCol) } : j));
   };
 
-  // Group jobs by status
   const jobsByStatus: Record<string, Job[]> = {
     Open: [],
     Applied: [],
@@ -304,15 +281,18 @@ const JobsPage = () => {
                 <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{col.label}</Typography>
                 {jobsByStatus[col.key].map(job => (
                   <DraggableJobCard key={job.id} job={job}>
-                    <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
-                      <JobCard
-                        job={job}
-                        onEdit={handleOpenEdit}
-                        resumes={resumes}
-                        onDelete={handleDeleteClick}
-                        onAttachResume={handleAttachResume}
-                      />
-                    </Box>
+                    {({ dragHandleProps }) => (
+                      <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
+                        <JobCard
+                          job={job}
+                          onEdit={handleOpenEdit}
+                          resumes={resumes}
+                          onDelete={handleDeleteClick}
+                          onAttachResume={handleAttachResume}
+                          dragHandleProps={dragHandleProps}
+                        />
+                      </Box>
+                    )}
                   </DraggableJobCard>
                 ))}
               </DroppableColumn>
@@ -340,4 +320,4 @@ const JobsPage = () => {
   );
 };
 
-export default JobsPage;
+export default JobsKanban;

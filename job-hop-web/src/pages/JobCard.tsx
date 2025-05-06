@@ -1,17 +1,28 @@
 import React from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import type { Job } from './types';
+
+export interface Job {
+  id: string;
+  company_name: string;
+  title: string;
+  description?: string;
+  url?: string;
+  resume_id?: string;
+  cover_letter?: string;
+  status: string;
+}
 
 interface JobCardProps {
   job: Job;
   onEdit: (job: Job) => void;
-  onDelete: (job: Job) => void;
-  onAttachResume: (jobId: string, resumeId: string) => Promise<void>;
-  resumes: { id: string; name: string }[];
+  onDelete?: (job: Job) => void;
+  onAttachResume?: (jobId: string, resumeId: string) => Promise<void>;
+  resumes?: { id: string; name: string }[];
+  dragHandleProps?: React.HTMLAttributes<HTMLSpanElement>;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
+const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => (
   <Card
     sx={{
       borderRadius: 3,
@@ -20,7 +31,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
       minHeight: 50,
       maxHeight: 50,
       p: 1,
-      mb: 0.5, // vertical margin between cards (15px)
+      mb: 0.5,
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
@@ -41,7 +52,12 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit }) => (
     }}
     onClick={onEdit ? () => onEdit(job) : undefined}
   >
-    <span style={{ cursor: 'grab', marginRight: 8, display: 'flex', alignItems: 'center' }} className="drag-handle">
+    <span
+      style={{ cursor: 'grab', marginRight: 8, display: 'flex', alignItems: 'center' }}
+      className="drag-handle"
+      {...dragHandleProps}
+      onClick={e => { e.stopPropagation(); }}
+    >
       <DragIndicatorIcon fontSize="small" />
     </span>
     <CardContent sx={{ p: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', height: '100%' }}>

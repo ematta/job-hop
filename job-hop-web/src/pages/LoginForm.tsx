@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography, Alert, CircularProgress, Paper } from '@mui/material';
-import supabase from '../supabaseClient';
+import { supabase } from '../supabaseClient';
 
-
-export default function LoginForm() {
-  const router = useRouter();
+const LoginForm: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,7 +24,7 @@ export default function LoginForm() {
       if (data.session) {
         localStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
         localStorage.setItem('supabase.user', JSON.stringify(data.user));
-        router.replace('/');
+        navigate('/');
       } else {
         setError('Login failed.');
       }
@@ -74,7 +73,7 @@ export default function LoginForm() {
             variant="outlined"
             color="secondary"
             fullWidth
-            onClick={() => router.push('/register')}
+            onClick={() => navigate('/register')}
             disabled={loading}
             sx={{ fontWeight: 'bold', py: 1.5, borderRadius: 2 }}
           >
@@ -84,4 +83,6 @@ export default function LoginForm() {
       </form>
     </Paper>
   );
-}
+};
+
+export default LoginForm;
