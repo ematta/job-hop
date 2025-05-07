@@ -36,8 +36,8 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => (
       display: 'flex',
       alignItems: 'center',
       boxShadow: 1,
-      bgcolor: 'background.paper',
-      color: 'text.primary',
+      backgroundColor: "#334155",
+      color: 'white',
       overflow: 'hidden',
       transition: 'transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s',
       '&:hover': {
@@ -77,7 +77,6 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => (
         sx={{
           fontSize: 13,
           fontWeight: 600,
-          color: 'text.primary',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
