@@ -1,44 +1,62 @@
-import React from 'react';
-import { List, ListItem, ListItemText, CircularProgress, Button, Box, Paper } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { List, ListItem, ListItemText, CircularProgress, Typography, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Close';
+import { supabase } from '../supabaseClient';
 
 interface ResumeListProps {
-  resumes: string[];
-  userId: string;
-  loading: boolean;
-  getFileFromStorage: (filePath: string) => Promise<HTMLAnchorElement>;
+  userId: string | null;
 }
 
-const ResumeList: React.FC<ResumeListProps> = ({ resumes, userId, loading, getFileFromStorage }) => {
-  const handleDownload = async (fileName: string) => {
-    const filePath = `${userId}/${fileName}`;
-    try {
-      const link = await getFileFromStorage(filePath);
-      link.click();
-    } catch {
-      alert('Failed to download file.');
-    }
+const ResumeList: React.FC<ResumeListProps> = ({ userId }) => {
+  const [resumes, setResumes] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    setLoading(true);
+    supabase.storage.from('resumes').list(`${userId}/`, { limit: 100 })
+      .then(({ data, error }) => {
+        if (error) {
+          setError('Failed to load resumes.');
+          setResumes([]);
+        } else {
+          setResumes(data?.map(f => f.name) || []);
+        }
+        setLoading(false);
+      });
+  }, [userId]);
+
+  const handleDelete = async (name: string) => {
+    if (!userId) return;
+    setLoading(true);
+    await supabase.storage.from('resumes').remove([`${userId}/${name}`]);
+    setResumes(resumes => resumes.filter(n => n !== name));
+    setLoading(false);
   };
 
+  if (!userId) return null;
   if (loading) return <CircularProgress />;
-
-  if (!resumes.length) return <div>No resumes found.</div>;
+  if (error) return <Typography color="error">{error}</Typography>;
+  if (resumes.length === 0) return <Typography>No resumes found.</Typography>;
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-      <Paper elevation={3} sx={{ p: 4, minWidth: 400, maxWidth: 440, borderRadius: 3 }}>
-        <List>
-          {resumes.map((resume) => (
-            <ListItem key={resume} secondaryAction={
-              <Button variant="outlined" sx={{ fontWeight: 700 }} onClick={() => handleDownload(resume)}>
-                Download
-              </Button>
-            }>
-              <ListItemText primary={resume} />
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-    </Box>
+    <List>
+      {resumes.map(name => (
+        <ListItem key={name} secondaryAction={
+          <>
+            <a href={`https://your-supabase-url/storage/v1/object/public/resumes/${userId}/${name}`} target="_blank" rel="noopener noreferrer" style={{ marginRight: 8 }}>
+              Download
+            </a>
+            <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(name)} size="small">
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </>
+        }>
+          <ListItemText primary={name} />
+        </ListItem>
+      ))}
+    </List>
   );
 };
 

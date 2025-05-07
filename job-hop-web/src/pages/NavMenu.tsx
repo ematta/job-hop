@@ -6,11 +6,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PersonIcon from '@mui/icons-material/Person';
 import { supabase } from "../supabaseClient";
+import ResumeModal from './ResumeModal';
 
 const NavMenu: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,11 +48,6 @@ const NavMenu: React.FC = () => {
     navigate('/login', { replace: true });
   };
 
-  const handleNav = (path: string) => {
-    handleMenuClose();
-    navigate(path);
-  };
-
   return (
     <>
       <Tooltip title={isLoggedIn ? "Account" : "Login"}>
@@ -76,7 +73,7 @@ const NavMenu: React.FC = () => {
               <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>
               Logout
             </MenuItem>,
-            <MenuItem onClick={() => handleNav('/resumes')} key="resumes">
+            <MenuItem onClick={() => { setResumeModalOpen(true); handleMenuClose(); }} key="resumes">
               <ListItemIcon><DescriptionIcon fontSize="small" /></ListItemIcon>
               Resumes
             </MenuItem>,
@@ -87,6 +84,7 @@ const NavMenu: React.FC = () => {
           </MenuItem>
         )}
       </Menu>
+      <ResumeModal open={resumeModalOpen} onClose={() => setResumeModalOpen(false)} />
     </>
   );
 };
