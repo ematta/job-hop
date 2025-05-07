@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ListItem, ListItemText, CircularProgress, Button, Box, Paper, Typography } from '@mui/material';
+import { List, ListItem, ListItemText, CircularProgress, Button, Box, Paper } from '@mui/material';
 
 interface ResumeListProps {
   resumes: string[];

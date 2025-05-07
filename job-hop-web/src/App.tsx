@@ -7,6 +7,12 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import { ThemeProvider, CssBaseline, createTheme } from '@mui/material'
 import NavMenu from './pages/NavMenu';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import Contact from './pages/Contact';
+import Feedback from './pages/Feedback';
+import HelpCenter from './pages/HelpCenter';
+import About from './pages/About';
 
 const theme = createTheme({
   palette: {
@@ -51,6 +57,12 @@ function App() {
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/resumes" element={<Resumes />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/help" element={<HelpCenter />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
