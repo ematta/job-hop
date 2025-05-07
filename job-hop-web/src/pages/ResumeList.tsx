@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ListItem, ListItemText, CircularProgress, Button } from '@mui/material';
+import { List, ListItem, ListItemText, CircularProgress, Button, Box, Paper, Typography } from '@mui/material';
 
 interface ResumeListProps {
   resumes: string[];
@@ -24,17 +24,21 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, userId, loading, getFi
   if (!resumes.length) return <div>No resumes found.</div>;
 
   return (
-    <List>
-      {resumes.map((resume) => (
-        <ListItem key={resume} secondaryAction={
-          <Button variant="outlined" onClick={() => handleDownload(resume)}>
-            Download
-          </Button>
-        }>
-          <ListItemText primary={resume} />
-        </ListItem>
-      ))}
-    </List>
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+      <Paper elevation={3} sx={{ p: 4, minWidth: 400, maxWidth: 440, borderRadius: 3 }}>
+        <List>
+          {resumes.map((resume) => (
+            <ListItem key={resume} secondaryAction={
+              <Button variant="outlined" sx={{ fontWeight: 700 }} onClick={() => handleDownload(resume)}>
+                Download
+              </Button>
+            }>
+              <ListItemText primary={resume} />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+    </Box>
   );
 };
 
