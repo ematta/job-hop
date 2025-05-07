@@ -84,10 +84,6 @@ const NavMenu: React.FC = () => {
             <MenuItem onClick={() => handleNav('/jobs')} key="jobs">
               <ListItemIcon><WorkIcon fontSize="small" /></ListItemIcon>
               Jobs
-            </MenuItem>,
-            <MenuItem onClick={() => handleNav('/profile')} key="profile">
-              <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
-              Profile
             </MenuItem>
           ] : (
           <MenuItem onClick={handleLogin}>
