@@ -1,7 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
-import Jobs from './pages/Jobs'
 import Resumes from './pages/Resumes'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
@@ -54,7 +53,6 @@ function App() {
         <NavMenu />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/jobs" element={<Jobs />} />
           <Route path="/resumes" element={<Resumes />} />
           <Route path="/login" element={<Login />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
