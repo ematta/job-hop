@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
-import Footer from './Footer';
+import Footer from '../components/Footer';
 import JobsKanban from './JobsKanban';
-import Header from './Header';
+import Header from '../components/Header';
 
 const Home: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

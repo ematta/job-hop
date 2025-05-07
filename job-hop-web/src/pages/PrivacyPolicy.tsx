@@ -1,5 +1,5 @@
 import { Container, Typography, Paper } from '@mui/material';
-import Footer from './Footer';
+import Footer from '../components/Footer';
 
 const PrivacyPolicy = () => (
   <>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Paper, Link as MuiLink } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import Footer from './Footer';
+import Footer from '../components/Footer';
 
 const Contact: React.FC = () => {
   const theme = useTheme();
