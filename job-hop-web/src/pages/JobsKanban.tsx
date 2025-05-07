@@ -8,7 +8,6 @@ import DeleteJobDialog from './DeleteJobDialog.tsx';
 import JobCard from './JobCard.tsx';
 import type { Job } from './JobCard.tsx';
 import FloatingAddButton from './FloatingAddButton.tsx';
-import Footer from './Footer.tsx';
 
 const KANBAN_COLUMNS = [
   { key: 'Open', label: 'Open' },
@@ -337,7 +336,6 @@ const JobsKanban: React.FC = () => {
         />
         <FloatingAddButton onClick={handleOpenAdd} aria-label="Add Job" />
       </Box>
-      <Footer />
     </>
   );
 };

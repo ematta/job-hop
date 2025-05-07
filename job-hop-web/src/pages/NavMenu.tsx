@@ -4,7 +4,6 @@ import { Avatar, Menu, MenuItem, IconButton, Tooltip, ListItemIcon } from "@mui/
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DescriptionIcon from '@mui/icons-material/Description';
-import WorkIcon from '@mui/icons-material/Work';
 import PersonIcon from '@mui/icons-material/Person';
 import { supabase } from "../supabaseClient";
 
@@ -81,10 +80,6 @@ const NavMenu: React.FC = () => {
               <ListItemIcon><DescriptionIcon fontSize="small" /></ListItemIcon>
               Resumes
             </MenuItem>,
-            <MenuItem onClick={() => handleNav('/jobs')} key="jobs">
-              <ListItemIcon><WorkIcon fontSize="small" /></ListItemIcon>
-              Jobs
-            </MenuItem>
           ] : (
           <MenuItem onClick={handleLogin}>
             <ListItemIcon><LoginIcon fontSize="small" /></ListItemIcon>
