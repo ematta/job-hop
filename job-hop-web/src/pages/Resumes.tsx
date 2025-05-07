@@ -3,6 +3,7 @@ import { Box, Typography, Paper, Alert } from '@mui/material';
 import { supabase } from '../supabaseClient';
 import ResumeUpload from './ResumeUpload.tsx';
 import ResumeList from './ResumeList.tsx';
+import Footer from './Footer.tsx';
 
 function getUserId() {
   // Read user from cookie instead of localStorage
@@ -92,15 +93,18 @@ const Resumes: React.FC = () => {
   }
 
   return (
-    <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center">
-      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
-        <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center">Your Resumes</Typography>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
-        <ResumeUpload uploading={uploading} onUpload={handleUpload} fileInputRef={fileInputRef} />
-        <ResumeList resumes={resumes} userId={userId} loading={loading} getFileFromStorage={getFileFromStorage} />
-      </Paper>
-    </Box>
+    <>
+      <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center">
+        <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 420, maxHeight: 640, textAlign: 'center' }}>
+          <Typography variant="h4" fontWeight="bold" mb={3} textAlign="center">Your Resumes</Typography>
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+          <ResumeUpload uploading={uploading} onUpload={handleUpload} fileInputRef={fileInputRef} />
+          <ResumeList resumes={resumes} userId={userId} loading={loading} getFileFromStorage={getFileFromStorage} />
+        </Paper>
+      </Box>
+      <Footer />
+    </>
   );
 };
 

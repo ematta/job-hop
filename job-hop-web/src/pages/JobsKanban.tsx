@@ -8,6 +8,7 @@ import DeleteJobDialog from './DeleteJobDialog.tsx';
 import JobCard from './JobCard.tsx';
 import type { Job } from './JobCard.tsx';
 import FloatingAddButton from './FloatingAddButton.tsx';
+import Footer from './Footer.tsx';
 
 const KANBAN_COLUMNS = [
   { key: 'Open', label: 'Open' },
@@ -272,69 +273,72 @@ const JobsKanban: React.FC = () => {
   });
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')}>
-        <Alert severity="error" onClose={() => setError('')}>{error}</Alert>
-      </Snackbar>
-      <Snackbar open={!!success} autoHideDuration={3000} onClose={() => setSuccess('')}>
-        <Alert severity="success" onClose={() => setSuccess('')}>{success}</Alert>
-      </Snackbar>
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-        <Typography variant="h4">Jobs List</Typography>
+    <>
+      <Box sx={{ p: 4 }}>
+        <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')}>
+          <Alert severity="error" onClose={() => setError('')}>{error}</Alert>
+        </Snackbar>
+        <Snackbar open={!!success} autoHideDuration={3000} onClose={() => setSuccess('')}>
+          <Alert severity="success" onClose={() => setSuccess('')}>{success}</Alert>
+        </Snackbar>
+        <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
+          <Typography variant="h4">Jobs List</Typography>
+        </Box>
+        {(loadingJobs || loadingResumes) ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box display="flex" gap={2} alignItems="flex-start" justifyContent="center" minHeight={400}>
+            <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              {KANBAN_COLUMNS.map(col => (
+                <DroppableColumn
+                  key={col.key}
+                  id={col.key}
+                  isEmpty={jobsByStatus[col.key].length === 0}
+                  count={jobsByStatus[col.key].length}
+                >
+                  {jobsByStatus[col.key].map(job => (
+                    <DraggableJobCard key={job.id} job={job}>
+                      {({ dragHandleProps }) => (
+                        <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
+                          <JobCard
+                            job={job}
+                            onEdit={handleOpenEdit}
+                            resumes={resumes}
+                            onDelete={handleDeleteClick}
+                            onAttachResume={handleAttachResume}
+                            dragHandleProps={dragHandleProps}
+                          />
+                        </Box>
+                      )}
+                    </DraggableJobCard>
+                  ))}
+                </DroppableColumn>
+              ))}
+            </DndContext>
+          </Box>
+        )}
+        <JobModal
+          open={openModal}
+          mode={modalMode}
+          form={form}
+          onChange={handleFormChange}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmit}
+          resumes={resumes}
+        />
+        <DeleteJobDialog
+          open={deleteDialogOpen}
+          jobTitle={jobToDelete?.title}
+          companyName={jobToDelete?.companyName}
+          onCancel={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+        />
+        <FloatingAddButton onClick={handleOpenAdd} aria-label="Add Job" />
       </Box>
-      {(loadingJobs || loadingResumes) ? (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Box display="flex" gap={2} alignItems="flex-start" justifyContent="center" minHeight={400}>
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            {KANBAN_COLUMNS.map(col => (
-              <DroppableColumn
-                key={col.key}
-                id={col.key}
-                isEmpty={jobsByStatus[col.key].length === 0}
-                count={jobsByStatus[col.key].length}
-              >
-                {jobsByStatus[col.key].map(job => (
-                  <DraggableJobCard key={job.id} job={job}>
-                    {({ dragHandleProps }) => (
-                      <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
-                        <JobCard
-                          job={job}
-                          onEdit={handleOpenEdit}
-                          resumes={resumes}
-                          onDelete={handleDeleteClick}
-                          onAttachResume={handleAttachResume}
-                          dragHandleProps={dragHandleProps}
-                        />
-                      </Box>
-                    )}
-                  </DraggableJobCard>
-                ))}
-              </DroppableColumn>
-            ))}
-          </DndContext>
-        </Box>
-      )}
-      <JobModal
-        open={openModal}
-        mode={modalMode}
-        form={form}
-        onChange={handleFormChange}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmit}
-        resumes={resumes}
-      />
-      <DeleteJobDialog
-        open={deleteDialogOpen}
-        jobTitle={jobToDelete?.title}
-        companyName={jobToDelete?.companyName}
-        onCancel={handleDeleteCancel}
-        onConfirm={handleDeleteConfirm}
-      />
-      <FloatingAddButton onClick={handleOpenAdd} aria-label="Add Job" />
-    </Box>
+      <Footer />
+    </>
   );
 };
 
