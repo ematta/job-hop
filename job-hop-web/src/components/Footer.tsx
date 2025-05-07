@@ -17,10 +17,10 @@ const Footer: React.FC = () => {
         textAlign: 'center',
         background: '#788BBA',
       }}>
-        <Typography variant="body2" sx={{ background: "#fff", mb: 0.5, borderRadius: theme.shape.borderRadius }}>
+        <Typography variant="body2" sx={{ mb: 0.5, borderRadius: theme.shape.borderRadius, color: theme.palette.text.primary }}>
           &copy; {new Date().getFullYear()} matta.dev All rights reserved.
         </Typography>
-        <Box sx={{ background: "#fff", display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mb: 0.5, borderRadius: theme.shape.borderRadius }}>
+        <Box sx={{ color: "fff", display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mb: 0.5, borderRadius: theme.shape.borderRadius }}>
           <MuiLink component={Link} to="/privacy-policy" color="primary" underline="hover">Privacy Policy</MuiLink>
           <span>|</span>
           <MuiLink component={Link} to="/terms-of-service" color="primary" underline="hover">Terms of Service</MuiLink>
