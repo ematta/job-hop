@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Paper, TextField, Button, Alert } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import Footer from './Footer';
+import Footer from '../components/Footer';
 
 const Feedback: React.FC = () => {
   const theme = useTheme();

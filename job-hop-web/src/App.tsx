@@ -4,7 +4,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import { ThemeProvider, CssBaseline, createTheme } from '@mui/material'
-import NavMenu from './pages/NavMenu';
+import NavMenu from './components/NavMenu';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Contact from './pages/Contact';

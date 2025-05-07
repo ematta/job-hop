@@ -3,11 +3,11 @@ import { Box, Typography, CircularProgress, Alert, Snackbar } from '@mui/materia
 import { DndContext, closestCenter, useDraggable, useDroppable } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { supabase } from '../supabaseClient';
-import JobModal from './JobModal.tsx';
-import DeleteJobDialog from './DeleteJobDialog.tsx';
-import JobCard from './JobCard.tsx';
-import type { Job } from './JobCard.tsx';
-import FloatingAddButton from './FloatingAddButton.tsx';
+import JobModal from '../components/JobModal';
+import DeleteJobDialog from '../components/DeleteJobDialog';
+import JobCard from '../components/JobCard';
+import type { Job } from '../components/JobCard';
+import FloatingAddButton from '../components/FloatingAddButton';
 
 const KANBAN_COLUMNS = [
   { key: 'Open', label: 'Open' },
