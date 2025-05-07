@@ -44,7 +44,7 @@ function DraggableJobCard({ job, children }: { job: Job; children: (handleProps:
   );
 }
 
-function DroppableColumn({ id, children, isEmpty }: { id: string; children: React.ReactNode; isEmpty: boolean }) {
+function DroppableColumn({ id, children, isEmpty, count }: { id: string; children: React.ReactNode; isEmpty: boolean; count: number }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <Box
@@ -65,7 +65,7 @@ function DroppableColumn({ id, children, isEmpty }: { id: string; children: Reac
         transition: 'background 0.2s, border 0.2s',
       }}
     >
-      <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{id}</Typography>
+      <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{id} ({count})</Typography>
       <Box sx={{ flex: 1, width: '100%', overflowY: 'auto', pr: 1 }}>
         {isEmpty && (
           <Typography sx={{ color: '#64748b', width: '100%', textAlign: 'center', mt: 4, fontStyle: 'italic' }}>
@@ -290,7 +290,12 @@ const JobsKanban: React.FC = () => {
         <Box display="flex" gap={2} alignItems="flex-start" justifyContent="center" minHeight={400}>
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             {KANBAN_COLUMNS.map(col => (
-              <DroppableColumn key={col.key} id={col.key} isEmpty={jobsByStatus[col.key].length === 0}>
+              <DroppableColumn
+                key={col.key}
+                id={col.key}
+                isEmpty={jobsByStatus[col.key].length === 0}
+                count={jobsByStatus[col.key].length}
+              >
                 {jobsByStatus[col.key].map(job => (
                   <DraggableJobCard key={job.id} job={job}>
                     {({ dragHandleProps }) => (
