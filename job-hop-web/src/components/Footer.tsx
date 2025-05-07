@@ -10,16 +10,17 @@ const Footer: React.FC = () => {
         bgcolor: theme.palette.background.paper,
         color: theme.palette.text.secondary,
         borderTop: `1px solid ${theme.palette.divider}`,
-        borderRadius: 0,
+        borderRadius: theme.shape.borderRadius, // use theme borderRadius for rounded edges
         mt: 8,
         px: { xs: 2, sm: 4 },
         py: 3,
         textAlign: 'center',
+        background: '#788BBA',
       }}>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
-          &copy; {new Date().getFullYear()} Job Hop. All rights reserved.
+        <Typography variant="body2" sx={{ background: "#fff", mb: 0.5, borderRadius: theme.shape.borderRadius }}>
+          &copy; {new Date().getFullYear()} matta.dev All rights reserved.
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mb: 0.5 }}>
+        <Box sx={{ background: "#fff", display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mb: 0.5, borderRadius: theme.shape.borderRadius }}>
           <MuiLink component={Link} to="/privacy-policy" color="primary" underline="hover">Privacy Policy</MuiLink>
           <span>|</span>
           <MuiLink component={Link} to="/terms-of-service" color="primary" underline="hover">Terms of Service</MuiLink>

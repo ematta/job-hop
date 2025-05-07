@@ -55,7 +55,7 @@ function DroppableColumn({ id, children, isEmpty, count }: { id: string; childre
         maxWidth: 320,
         bgcolor: isOver ? '#334155' : '#18181b',
         border: isOver ? '2px solid #38bdf8' : '2px solid transparent',
-        borderRadius: 2,
+        borderRadius: 4, // increased for more rounded edges
         p: 2,
         height: 500,
         display: 'flex',
@@ -63,6 +63,7 @@ function DroppableColumn({ id, children, isEmpty, count }: { id: string; childre
         alignItems: 'flex-start',
         position: 'relative',
         transition: 'background 0.2s, border 0.2s',
+        background: '#334155',
       }}
     >
       <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{id} ({count})</Typography>
@@ -280,9 +281,6 @@ const JobsKanban: React.FC = () => {
         <Snackbar open={!!success} autoHideDuration={3000} onClose={() => setSuccess('')}>
           <Alert severity="success" onClose={() => setSuccess('')}>{success}</Alert>
         </Snackbar>
-        <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-          <Typography variant="h4">Jobs List</Typography>
-        </Box>
         {(loadingJobs || loadingResumes) ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
             <CircularProgress />
