@@ -4,11 +4,11 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 export interface Job {
   id: string;
-  company_name: string;
+  companyName: string;
   title: string;
   description?: string;
   url?: string;
-  resume_id?: string;
+  resumeId?: string;
   cover_letter?: string;
   status: string;
 }
@@ -85,9 +85,9 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => (
           minWidth: 0,
           textAlign: 'center',
         }}
-        title={job.company_name}
+        title={job.companyName}
       >
-        {job.company_name}
+        {job.companyName}
       </Typography>
     </CardContent>
   </Card>

@@ -5,10 +5,11 @@ import ResumeUpload from './ResumeUpload.tsx';
 import ResumeList from './ResumeList.tsx';
 
 function getUserId() {
-  const userStr = localStorage.getItem('supabase.user');
-  if (!userStr) return null;
+  // Read user from cookie instead of localStorage
+  const match = document.cookie.match(/(?:^|; )supabase_user=([^;]*)/);
+  if (!match) return null;
   try {
-    const user = JSON.parse(userStr);
+    const user = JSON.parse(decodeURIComponent(match[1]));
     return user?.id || user?.uuid || null;
   } catch {
     return null;

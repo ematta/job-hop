@@ -21,9 +21,9 @@ const LoginForm: React.FC = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      if (data.session) {
-        localStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
-        localStorage.setItem('supabase.user', JSON.stringify(data.user));
+      if (data.user) {
+        // Save user to cookie for session persistence
+        document.cookie = `supabase_user=${encodeURIComponent(JSON.stringify(data.user))}; path=/; max-age=604800; samesite=strict`;
         navigate('/');
       } else {
         setError('Login failed.');

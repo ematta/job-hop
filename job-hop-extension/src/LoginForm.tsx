@@ -13,10 +13,11 @@ const LoginForm: React.FC = () => {
 
   // On mount, check if user is already logged in
   useEffect(() => {
-    const userStr = localStorage.getItem('supabase.user');
-    if (userStr) {
+    // Read user from cookie instead of localStorage
+    const match = document.cookie.match(/(?:^|; )supabase_user=([^;]*)/);
+    if (match) {
       try {
-        const user = JSON.parse(userStr);
+        const user = JSON.parse(decodeURIComponent(match[1]));
         if (user?.id || user?.uuid) {
           setUserId(user.id || user.uuid);
         }
@@ -36,9 +37,9 @@ const LoginForm: React.FC = () => {
     setUserId(user?.id || null);
     if (error) setError(error.message);
     else {
-      // Save user to localStorage for session persistence
+      // Save user to cookie for session persistence
       if (user) {
-        localStorage.setItem('supabase.user', JSON.stringify(user));
+        document.cookie = `supabase_user=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=604800; samesite=strict`;
       }
       refreshSession();
     }

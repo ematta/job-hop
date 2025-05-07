@@ -17,10 +17,11 @@ const KANBAN_COLUMNS = [
 ];
 
 function getUserId() {
-  const userStr = localStorage.getItem('supabase.user');
-  if (!userStr) return null;
+  // Read user from cookie instead of localStorage
+  const match = document.cookie.match(/(?:^|; )supabase_user=([^;]*)/);
+  if (!match) return null;
   try {
-    const user = JSON.parse(userStr);
+    const user = JSON.parse(decodeURIComponent(match[1]));
     return user?.id || user?.uuid || null;
   } catch {
     return null;
@@ -83,7 +84,7 @@ const JobsKanban: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [form, setForm] = useState({ company_name: '', title: '', url: '', resume_id: '' });
+  const [form, setForm] = useState({ companyName: '', title: '', url: '', resumeId: '' });
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [loadingResumes, setLoadingResumes] = useState(true);
   const [error, setError] = useState('');
@@ -132,7 +133,7 @@ const JobsKanban: React.FC = () => {
 
   const handleOpenAdd = () => {
     setModalMode('add');
-    setForm({ company_name: '', title: '', url: '', resume_id: '' });
+    setForm({ companyName: '', title: '', url: '', resumeId: '' });
     setOpenModal(true);
     setSelectedJob(null);
   };
@@ -140,10 +141,10 @@ const JobsKanban: React.FC = () => {
   const handleOpenEdit = (job: Job) => {
     setModalMode('edit');
     setForm({
-      company_name: job.company_name,
+      companyName: job.companyName,
       title: job.title,
       url: job.url || '',
-      resume_id: job.resume_id || '',
+      resumeId: job.resumeId || '',
     });
     setOpenModal(true);
     setSelectedJob(job);
@@ -159,7 +160,7 @@ const JobsKanban: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!form.company_name || !form.title) {
+    if (!form.companyName || !form.title) {
       setError('Company name and job title are required');
       return;
     }
@@ -169,10 +170,11 @@ const JobsKanban: React.FC = () => {
       if (modalMode === 'add') {
         const { error } = await supabase.from('job').insert([
           {
-            company_name: form.company_name,
+            companyName: form.companyName,
             title: form.title,
             url: form.url,
             userId,
+            resumeId: form.resumeId || null,
           },
         ]);
         if (error) throw error;
@@ -180,10 +182,10 @@ const JobsKanban: React.FC = () => {
         handleCloseModal();
       } else if (modalMode === 'edit' && selectedJob) {
         const { error } = await supabase.from('job').update({
-          company_name: form.company_name,
+          companyName: form.companyName,
           title: form.title,
           url: form.url,
-          resume_id: form.resume_id || null,
+          resumeId: form.resumeId || null,
         }).eq('id', selectedJob.id);
         if (error) throw error;
         setSuccess('Job updated');
@@ -229,9 +231,9 @@ const JobsKanban: React.FC = () => {
     setError('');
     setSuccess('');
     try {
-      const { error } = await supabase.from('job').update({ resume_id: resumeId }).eq('id', jobId);
+      const { error } = await supabase.from('job').update({ resumeId: resumeId }).eq('id', jobId);
       if (error) throw error;
-      setJobs(jobs.map(j => j.id === jobId ? { ...j, resume_id: resumeId } : j));
+      setJobs(jobs.map(j => j.id === jobId ? { ...j, resumeId: resumeId } : j));
       setSuccess('Resume attached');
     } catch (e) {
       setError(`Failed to attach resume: ${(e as Error).message}`);
@@ -289,7 +291,6 @@ const JobsKanban: React.FC = () => {
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             {KANBAN_COLUMNS.map(col => (
               <DroppableColumn key={col.key} id={col.key} isEmpty={jobsByStatus[col.key].length === 0}>
-                <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{col.label}</Typography>
                 {jobsByStatus[col.key].map(job => (
                   <DraggableJobCard key={job.id} job={job}>
                     {({ dragHandleProps }) => (
@@ -318,11 +319,12 @@ const JobsKanban: React.FC = () => {
         onChange={handleFormChange}
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
+        resumes={resumes}
       />
       <DeleteJobDialog
         open={deleteDialogOpen}
         jobTitle={jobToDelete?.title}
-        companyName={jobToDelete?.company_name}
+        companyName={jobToDelete?.companyName}
         onCancel={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
       />

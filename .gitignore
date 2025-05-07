@@ -320,3 +320,6 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 .DS_Store
+
+# Local Netlify folder
+.netlify

@@ -9,7 +9,7 @@ interface JobFormProps {
 }
 
 interface JobFormState {
-  company_name: string;
+  companyName: string;
   title: string;
   url: string;
   status: string;
@@ -19,7 +19,7 @@ interface JobFormState {
 const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
   const { refreshSession } = useAuth();
   const [form, setForm] = useState<JobFormState>({
-    company_name: '',
+    companyName: '',
     title: '',
     url: prefillUrl || '',
     status: 'Open', // default status
@@ -64,7 +64,7 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
     } else {
       setMsg('Success!');
       setMsgColor('green');
-      setForm({ company_name: '', title: '', url: '', status: 'Open' });
+      setForm({ companyName: '', title: '', url: '', status: 'Open' });
     }
   };
 
@@ -116,8 +116,8 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
       />
       <TextField
         label="Company Name"
-        value={form.company_name}
-        onChange={e => handleChange('company_name', e.target.value)}
+        value={form.companyName}
+        onChange={e => handleChange('companyName', e.target.value)}
         required
         fullWidth
         margin="dense"
