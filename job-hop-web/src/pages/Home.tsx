@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
 import Footer from './Footer';
 
 const Home: React.FC = () => {
