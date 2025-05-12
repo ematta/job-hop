@@ -36,6 +36,7 @@ function DraggableJobCard({ job, children }: { job: Job; children: (handleProps:
       style={{
         transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
         opacity: isDragging ? 0.5 : 1,
+        width: '90%', // Set the draggable item to 90% of its container width
         marginBottom: 12,
       }}
     >
@@ -67,7 +68,15 @@ function DroppableColumn({ id, children, isEmpty, count }: { id: string; childre
       }}
     >
       <Typography variant="h6" align="center" sx={{ mb: 2, color: '#f3f4f6', width: '100%' }}>{id} ({count})</Typography>
-      <Box sx={{ flex: 1, width: '100%', overflowY: 'auto', pr: 1 }}>
+      <Box sx={{
+        flex: 1,
+        width: '100%',
+        overflowY: 'auto',
+        pr: 1, // For scrollbar spacing
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center', // Changed from 'flex-start' to 'center'
+      }}>
         {isEmpty && (
           <Typography sx={{ color: '#64748b', width: '100%', textAlign: 'center', mt: 4, fontStyle: 'italic' }}>
             Empty
@@ -269,9 +278,36 @@ const JobsKanban: React.FC = () => {
     Interviewing: [],
     Closed: [],
   };
+
+  const twoWeeksAgo = new Date();
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
   jobs.forEach(job => {
     const col = job.status || 'Open';
-    if (jobsByStatus[col]) jobsByStatus[col].push(job);
+    if (col === 'Closed') {
+      // For 'Closed' jobs, filter based strictly on createdAt.
+      // If createdAt is missing or older than two weeks, do not show the job.
+      let shouldShowClosedJob = false;
+      if (job.createdAt) {
+        const createdDate = new Date(job.createdAt);
+        if (createdDate >= twoWeeksAgo) {
+          shouldShowClosedJob = true;
+        }
+      }
+      // If job.createdAt is missing, shouldShowClosedJob remains false.
+      // If job.createdAt is present but old, shouldShowClosedJob remains false.
+
+      if (shouldShowClosedJob) {
+        if (jobsByStatus[col]) { // Check if column exists, though it should
+            jobsByStatus[col].push(job);
+        }
+      }
+    } else {
+      // For non-closed jobs, always add them
+      if (jobsByStatus[col]) { // Check if column exists
+        jobsByStatus[col].push(job);
+      }
+    }
   });
 
   return (
@@ -300,7 +336,7 @@ const JobsKanban: React.FC = () => {
                   {jobsByStatus[col.key].map(job => (
                     <DraggableJobCard key={job.id} job={job}>
                       {({ dragHandleProps }) => (
-                        <Box sx={{ width: '50%', minWidth: 180, maxWidth: '50%', boxSizing: 'border-box', display: 'flex' }}>
+                        <Box sx={{ boxSizing: 'border-box', width: '100%' }}> {/* Changed to 100% to fill the DraggableJobCard */}
                           <JobCard
                             job={job}
                             onEdit={handleOpenEdit}
