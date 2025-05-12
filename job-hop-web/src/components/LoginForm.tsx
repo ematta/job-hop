@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography, Alert, CircularProgress, Paper } from '@mui/material';
 import { supabase } from '../supabaseClient';
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  onLoginSuccess?: () => void; // Added new prop
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => { // Added onLoginSuccess
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +28,9 @@ const LoginForm: React.FC = () => {
       if (data.user) {
         // Save user to cookie for session persistence
         document.cookie = `supabase_user=${encodeURIComponent(JSON.stringify(data.user))}; path=/; max-age=604800; samesite=strict`;
+        if (onLoginSuccess) { // Call onLoginSuccess if it exists
+          onLoginSuccess();
+        }
         navigate('/');
       } else {
         setError('Login failed.');
