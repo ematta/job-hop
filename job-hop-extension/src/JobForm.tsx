@@ -178,17 +178,28 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
 			<TextField
 				label="Status"
 				value={form.status}
-				onChange={(e) => handleChange("status", e.target.value)}
-				required
 				fullWidth
 				margin="dense"
 				InputLabelProps={{ style: { color: "#64748b" } }}
-				InputProps={{
-					style: { color: "#1e293b", background: "#f1f5f9", borderRadius: 2 },
+				inputProps={{
+					readOnly: true,
+					style: { color: "#1e293b" } // Apply text color directly to the input element
 				}}
 				sx={{
-					"& .MuiOutlinedInput-root": { bgcolor: "#f1f5f9", borderRadius: 2 },
-					"& .MuiOutlinedInput-notchedOutline": { borderColor: "#cbd5e1" },
+
+					"& .MuiOutlinedInput-root": {
+						bgcolor: "#e2e8f0", // Background for the input area
+						borderRadius: 2
+					},
+					"& .MuiOutlinedInput-notchedOutline": {
+						borderColor: "#cbd5e1"
+					},
+					// Ensure specific styling for the read-only input's text
+					"& .MuiInputBase-input[readOnly]": {
+						color: "#1e293b", // Explicitly set text color
+						WebkitTextFillColor: "#1e293b", // For Safari/Chrome to ensure text color
+						cursor: "default", // Indicate non-interactive text field
+					},
 				}}
 			/>
 			<Button

@@ -9,20 +9,21 @@ const PopupContent: React.FC = () => {
 
 	useEffect(() => {
 		const fetchCurrentUrl = async () => {
-			async function fetchCurrentUrl() {
+			try {
 				const [tab] = await chrome.tabs.query({
 					active: true,
 					lastFocusedWindow: true,
 				});
-				setCurrentUrl(tab.url);
+				if (tab && tab.url) {
+					setCurrentUrl(tab.url);
+				} else {
+					console.warn("Could not get current tab URL.");
+					setCurrentUrl(''); // Or some other default/error state
+				}
+			} catch (error) {
+				console.error("Error fetching current URL:", error);
+				setCurrentUrl(''); // Or some other default/error state
 			}
-			fetchCurrentUrl()
-				.then(() => {
-					console.log("Current URL:", currentUrl);
-				})
-				.catch((error) => {
-					console.error("Error fetching current URL:", error);
-				});
 		};
 
 		fetchCurrentUrl();
