@@ -2,17 +2,27 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography, Alert, CircularProgress, Paper } from '@mui/material';
 import { supabase } from '../supabaseClient';
+import RegisterModal from './RegisterModal'; // Import RegisterModal
 
 interface LoginFormProps {
-  onLoginSuccess?: () => void; // Added new prop
+  onLoginSuccess?: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => { // Added onLoginSuccess
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [registerModalOpen, setRegisterModalOpen] = useState(false); // State for RegisterModal
+
+  const handleOpenRegisterModal = () => {
+    setRegisterModalOpen(true);
+  };
+
+  const handleCloseRegisterModal = () => {
+    setRegisterModalOpen(false);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +91,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => { // Added o
               variant="outlined"
               color="secondary"
               fullWidth
-              onClick={() => navigate('/register')}
+              onClick={handleOpenRegisterModal} // Open RegisterModal
               disabled={loading}
               sx={{ fontWeight: 'bold', py: 1.5, borderRadius: 2 }}
             >
@@ -90,6 +100,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => { // Added o
           </Box>
         </form>
       </Paper>
+      <RegisterModal open={registerModalOpen} onClose={handleCloseRegisterModal} /> {/* Add RegisterModal */}
     </>
   );
 };
