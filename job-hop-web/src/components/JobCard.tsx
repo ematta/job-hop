@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'; // Import the icon
 
 export interface Job {
   id: string;
@@ -23,9 +22,10 @@ interface JobCardProps {
   onAttachResume?: (jobId: string, resumeId: string) => Promise<void>;
   resumes?: { id: string; name: string }[];
   dragHandleProps?: React.HTMLAttributes<HTMLSpanElement>;
+  showGhosted?: boolean; // Added new prop
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => {
+const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps, showGhosted }) => {
   const twoWeeksAgo = new Date();
   twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
@@ -80,20 +80,15 @@ const JobCard: React.FC<JobCardProps> = ({ job, onEdit, dragHandleProps }) => {
           p: 0,
           pr: 3,
           pl: 0,
-          flex: 1,
+          flex: 2,
           display: 'flex',
           alignItems: 'center',
-          height: '100%',
           minWidth: 0,
           overflow: 'hidden',
         }}
       >
-        {isGhosted && (
-          <HelpOutlineIcon
-            fontSize="small"
-            sx={{ color: 'rgba(255, 255, 255, 0.7)', mr: 0.5, ml: 1, flexShrink: 0 }}
-            titleAccess="This job posting is older than 2 weeks"
-          />
+        {isGhosted && showGhosted && ( // Modified to check showGhosted prop
+          <span>👻</span>
         )}
         <Typography
           className="jobcard-company"

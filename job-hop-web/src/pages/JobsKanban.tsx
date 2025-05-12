@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Alert, Snackbar } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Snackbar, Checkbox, FormControlLabel } from '@mui/material';
 import { DndContext, closestCenter, useDraggable, useDroppable } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { supabase } from '../supabaseClient';
@@ -17,7 +17,6 @@ const KANBAN_COLUMNS = [
 ];
 
 function getUserId() {
-  // Read user from cookie instead of localStorage
   const match = document.cookie.match(/(?:^|; )supabase_user=([^;]*)/);
   if (!match) return null;
   try {
@@ -36,7 +35,7 @@ function DraggableJobCard({ job, children }: { job: Job; children: (handleProps:
       style={{
         transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
         opacity: isDragging ? 0.5 : 1,
-        width: '90%', // Set the draggable item to 90% of its container width
+        width: '90%',
         marginBottom: 12,
       }}
     >
@@ -56,7 +55,7 @@ function DroppableColumn({ id, children, isEmpty, count }: { id: string; childre
         maxWidth: 320,
         bgcolor: isOver ? '#334155' : '#18181b',
         border: isOver ? '2px solid #38bdf8' : '2px solid transparent',
-        borderRadius: 4, // increased for more rounded edges
+        borderRadius: 4,
         p: 2,
         height: 500,
         display: 'flex',
@@ -72,10 +71,10 @@ function DroppableColumn({ id, children, isEmpty, count }: { id: string; childre
         flex: 1,
         width: '100%',
         overflowY: 'auto',
-        pr: 1, // For scrollbar spacing
+        pr: 1,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center', // Changed from 'flex-start' to 'center'
+        alignItems: 'center',
       }}>
         {isEmpty && (
           <Typography sx={{ color: '#64748b', width: '100%', textAlign: 'center', mt: 4, fontStyle: 'italic' }}>
@@ -101,6 +100,7 @@ const JobsKanban: React.FC = () => {
   const [success, setSuccess] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [jobToDelete, setJobToDelete] = useState<Job | null>(null);
+  const [showGhostedJobs, setShowGhostedJobs] = useState(false);
 
   const userId = getUserId();
 
@@ -185,7 +185,7 @@ const JobsKanban: React.FC = () => {
             url: form.url,
             userId,
             resumeId: form.resumeId || null,
-            createdAt: new Date().toISOString(), // Add this line
+            createdAt: new Date().toISOString(),
           },
         ]);
         if (error) throw error;
@@ -197,7 +197,7 @@ const JobsKanban: React.FC = () => {
           title: form.title,
           url: form.url,
           resumeId: form.resumeId || null,
-          updatedAt: new Date().toISOString(), // Add this line
+          updatedAt: new Date().toISOString(),
         }).eq('id', selectedJob.id);
         if (error) throw error;
         setSuccess('Job updated');
@@ -263,7 +263,7 @@ const JobsKanban: React.FC = () => {
     setError("");
     setSuccess("");
     try {
-      const { error } = await supabase.from('job').update({ status: targetCol, updatedAt: new Date().toISOString() }).eq('id', jobId); // Add updatedAt
+      const { error } = await supabase.from('job').update({ status: targetCol, updatedAt: new Date().toISOString() }).eq('id', jobId);
       if (error) throw error;
       setJobs(jobs.map(j => j.id === jobId ? { ...j, status: String(targetCol) } : j));
       setSuccess('Job status updated');
@@ -284,9 +284,20 @@ const JobsKanban: React.FC = () => {
 
   jobs.forEach(job => {
     const col = job.status || 'Open';
+    const dateString = job.updatedAt || job.createdAt;
+    let isGhosted = false;
+    if (!dateString) {
+      isGhosted = true;
+    } else {
+      const relevantDate = new Date(dateString);
+      isGhosted = relevantDate < twoWeeksAgo;
+    }
+
+    if (!showGhostedJobs && isGhosted && col !== 'Closed') {
+      return;
+    }
+
     if (col === 'Closed') {
-      // For 'Closed' jobs, filter based strictly on createdAt.
-      // If createdAt is missing or older than two weeks, do not show the job.
       let shouldShowClosedJob = false;
       if (job.createdAt) {
         const createdDate = new Date(job.createdAt);
@@ -294,17 +305,13 @@ const JobsKanban: React.FC = () => {
           shouldShowClosedJob = true;
         }
       }
-      // If job.createdAt is missing, shouldShowClosedJob remains false.
-      // If job.createdAt is present but old, shouldShowClosedJob remains false.
-
       if (shouldShowClosedJob) {
-        if (jobsByStatus[col]) { // Check if column exists, though it should
-            jobsByStatus[col].push(job);
+        if (jobsByStatus[col]) {
+          jobsByStatus[col].push(job);
         }
       }
     } else {
-      // For non-closed jobs, always add them
-      if (jobsByStatus[col]) { // Check if column exists
+      if (jobsByStatus[col]) {
         jobsByStatus[col].push(job);
       }
     }
@@ -319,6 +326,11 @@ const JobsKanban: React.FC = () => {
         <Snackbar open={!!success} autoHideDuration={3000} onClose={() => setSuccess('')}>
           <Alert severity="success" onClose={() => setSuccess('')}>{success}</Alert>
         </Snackbar>
+        <FormControlLabel
+          control={<Checkbox checked={showGhostedJobs} onChange={(e) => setShowGhostedJobs(e.target.checked)} />}
+          label="Show Ghosted Jobs"
+          sx={{ mb: 2, color: 'white' }}
+        />
         {(loadingJobs || loadingResumes) ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
             <CircularProgress />
@@ -336,7 +348,7 @@ const JobsKanban: React.FC = () => {
                   {jobsByStatus[col.key].map(job => (
                     <DraggableJobCard key={job.id} job={job}>
                       {({ dragHandleProps }) => (
-                        <Box sx={{ boxSizing: 'border-box', width: '100%' }}> {/* Changed to 100% to fill the DraggableJobCard */}
+                        <Box sx={{ boxSizing: 'border-box', width: '100%' }}>
                           <JobCard
                             job={job}
                             onEdit={handleOpenEdit}
@@ -344,6 +356,7 @@ const JobsKanban: React.FC = () => {
                             onDelete={handleDeleteClick}
                             onAttachResume={handleAttachResume}
                             dragHandleProps={dragHandleProps}
+                            showGhosted={showGhostedJobs}
                           />
                         </Box>
                       )}
