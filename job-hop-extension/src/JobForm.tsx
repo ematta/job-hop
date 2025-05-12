@@ -62,7 +62,7 @@ const JobForm: React.FC<JobFormProps> = ({ prefillUrl }) => {
 		e.preventDefault();
 		setLoading(true);
 		setMsg(null);
-		const { error } = await supabase.from("job").insert([{ ...form }]);
+		const { error } = await supabase.from("job").insert([{ ...form, createdAt: new Date().toISOString() }]); // Add createdAt
 		setLoading(false);
 		if (error) {
 			setMsg("Error!");

@@ -9,7 +9,7 @@ interface ResumeOption {
 interface JobModalProps {
   open: boolean;
   mode: 'add' | 'edit';
-  form: { companyName: string; title: string; url: string; resumeId: string };
+  form: { companyName: string; title: string; url: string; resumeId: string; description?: string };
   onChange: (field: string, value: string) => void;
   onClose: () => void;
   onSubmit: () => void;
@@ -44,6 +44,17 @@ const JobModal: React.FC<JobModalProps> = ({ open, mode, form, onChange, onClose
         margin="normal"
         value={form.url}
         onChange={e => onChange('url', e.target.value)}
+        InputLabelProps={{ color: 'secondary' }}
+        InputProps={{}}
+      />
+      <TextField
+        label="Description"
+        fullWidth
+        margin="normal"
+        multiline
+        minRows={2}
+        value={form.description || ''}
+        onChange={e => onChange('description', e.target.value)}
         InputLabelProps={{ color: 'secondary' }}
         InputProps={{}}
       />

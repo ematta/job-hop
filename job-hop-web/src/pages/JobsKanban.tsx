@@ -176,6 +176,7 @@ const JobsKanban: React.FC = () => {
             url: form.url,
             userId,
             resumeId: form.resumeId || null,
+            createdAt: new Date().toISOString(), // Add this line
           },
         ]);
         if (error) throw error;
@@ -187,6 +188,7 @@ const JobsKanban: React.FC = () => {
           title: form.title,
           url: form.url,
           resumeId: form.resumeId || null,
+          updatedAt: new Date().toISOString(), // Add this line
         }).eq('id', selectedJob.id);
         if (error) throw error;
         setSuccess('Job updated');
@@ -252,7 +254,7 @@ const JobsKanban: React.FC = () => {
     setError("");
     setSuccess("");
     try {
-      const { error } = await supabase.from('job').update({ status: targetCol }).eq('id', jobId);
+      const { error } = await supabase.from('job').update({ status: targetCol, updatedAt: new Date().toISOString() }).eq('id', jobId); // Add updatedAt
       if (error) throw error;
       setJobs(jobs.map(j => j.id === jobId ? { ...j, status: String(targetCol) } : j));
       setSuccess('Job status updated');
